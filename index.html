@@ -5621,5 +5621,12 @@ boot();
 window.EJ_TEST=true;
 (function(){ const off=()=>{ try{ toast('A tesztoldalon a pogácsabolt ki van kapcsolva.'); }catch(e){ alert('A tesztoldalon a pogácsabolt ki van kapcsolva.'); } };
   try{ openShop=off; }catch(e){} try{ shopBuy=off; }catch(e){} })();
+/* tesztgomb: csak vendég hősnél (nem kerül az élő adatbázisba) */
+(function(){ const _r=render; render=function(){ const r=_r.apply(this,arguments); try{
+  const old=document.getElementById('ej-test-cash'); if(old) old.remove();
+  if(state&&!(typeof ONLINE!=='undefined'&&ONLINE.user)&&(view==='karakter'||view==='lakas')){ const b=document.createElement('button'); b.id='ej-test-cash'; b.textContent='🧪 +100 000 Ft · +50 pogácsa';
+    b.style.cssText='position:fixed;right:8px;bottom:96px;z-index:100000;background:#ffd400;color:#111;border:0;border-radius:10px;padding:8px 12px;font:800 13px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.5)';
+    b.onclick=()=>{ state.gold+=100000; state.pog=(state.pog||0)+50; save(); render(); toast('Teszt: +100 000 Ft, +50 pogácsa'); }; document.body.appendChild(b); }
+  }catch(e){} return r; }; })();
 </script></body>
 </html>
