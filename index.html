@@ -1458,6 +1458,15 @@ html[lang=en] .logo::after{content:"Budapest";display:block;margin-top:8px;font-
 .home-ins{display:flex;flex-direction:column;gap:8px}
 .home-ins .home-room{background:radial-gradient(ellipse at 50% 30%,#2a2147,#151026);border-radius:14px;padding:6px}
 @media (prefers-reduced-motion:reduce){.r-neon,.r-fish,.r-sway{animation:none}}
+
+.room-art{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:12px}
+.room-art .ra-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.room-art .ra-it{position:absolute;transform:translateX(-50%);width:auto;cursor:pointer;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.room-art .ra-it:hover{filter:drop-shadow(0 0 6px rgba(255,214,140,.8))}
+.room-art .ra-sh{position:absolute;transform:translate(-50%,-50%);aspect-ratio:3/1;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.45),rgba(0,0,0,0));pointer-events:none}
+.room-art .ra-neon{filter:drop-shadow(0 0 5px #ff4f8b) drop-shadow(0 0 14px #ff4f8b);animation:rneon 3.2s infinite}
+.room-art .ra-empty{position:absolute;left:0;right:0;bottom:12%;text-align:center;font-weight:700;color:#fff;opacity:.8;text-shadow:0 2px 6px #000}
+.home-hero .home-room{padding:44px 0 0}
 </style>
 <style>
 #ej-test-bar{position:fixed;left:0;right:0;top:0;z-index:100000;background:repeating-linear-gradient(45deg,#ffd400 0 14px,#111 14px 28px);height:6px;pointer-events:none}
@@ -2991,6 +3000,23 @@ function roomSVG(h,opt){ opt=opt||{}; h=h||{t:1,f:{},d:[]}; const t=Math.max(1,M
     ${empty&&!opt.noHint?`<text x="${VW/2}" y="${VH*.7}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" opacity=".7">Üres. Vegyél bútort, és megjelenik itt!</text>`:''}</svg>`;
 }
 
+
+/* festett szobák (online változat: ROOM_ART-ot a build tölti ki; offline a kódból rajzolt szoba marad) */
+let ROOM_ART={"base":"lakas/","geo":{"1":[[0.5,0.5249],[0.1562,0.7176],[0.8385,0.7014],[0.4978,0.9306]],"2":[[0.4978,0.5208],[0.1562,0.7153],[0.8438,0.7083],[0.4978,0.9306]],"3":[[0.4978,0.5208],[0.1541,0.7153],[0.8438,0.7083],[0.4978,0.9277]],"4":[[0.4896,0.5833],[0.1437,0.7153],[0.8698,0.7112],[0.4991,0.9549]],"5":[[0.4896,0.5388],[0.1354,0.7292],[0.849,0.7153],[0.4978,0.9583]]},"items":{"noveny":{"uv":[0.07,0.07],"h":[0.1493,0.1644,0.2789]},"polc":{"uv":[0.06,0.3],"h":[0.239,0.239,0.2685]},"huto":{"uv":[0.07,0.8],"h":[0.1991,0.2338,0.2587]},"kave":{"uv":[0.33,0.07],"h":[0.2141,0.224,0.2292]},"agy":{"uv":[0.8,0.17],"h":[0.1644,0.1892,0.2141]},"pad":{"uv":[0.46,0.5],"h":[0.2089,0.2141,0.2587]},"bicikli":{"uv":[0.76,0.68],"h":[0.2089,0.2141,0.2292]},"kocka":{"uv":[0.24,0.62],"h":0.0596},"poszter":{"uv":[0.0,0.52],"h":0.191,"z":0.2431,"wall":"L"},"villamos":{"uv":[0.66,0.94],"h":0.0845},"bakelit":{"uv":[0.95,0.45],"h":0.0845},"akva":{"uv":[0.42,0.94],"h":0.1644},"hinta":{"uv":[0.57,0.17],"h":0.1794},"neon":{"uv":[0.3,0.0],"h":0.1505,"z":0.2315,"wall":"R"},"hid":{"uv":[0.92,0.8],"h":0.0943}},"over":{"4":{"noveny":[0.2,0.06]},"5":{"huto":[0.07,0.93],"polc":[0.06,0.22]}},"asp":{"d_hinta":0.8333,"f1_noveny":0.5786,"f3_polc":0.5903,"d_neon":0.6646,"f2_agy":1.2533,"d_akva":0.7102,"d_villamos":1.2747,"f1_polc":0.6354,"f3_pad":0.8051,"d_kocka":0.8906,"f2_polc":0.6667,"f1_bicikli":0.9675,"f1_pad":0.9314,"f1_kave":0.687,"f3_kave":0.9472,"f2_noveny":0.6923,"f1_huto":0.6137,"f3_huto":0.5848,"d_bakelit":1.6374,"f2_pad":0.9856,"f2_kave":0.7317,"f3_bicikli":0.9106,"f2_bicikli":0.6585,"f2_huto":0.5523,"f1_agy":1.5153,"f3_agy":1.1747,"d_poszter":0.6244,"f3_noveny":0.8361,"d_hid":1.6733}};
+const ROOM_NAMES={pad:0,polc:1,bicikli:2,agy:3,noveny:4,kave:5,huto:6};
+function roomView(h,opt){ return ROOM_ART?roomArt(h,opt):roomSVG(h,opt); }
+function roomArt(h,opt){ opt=opt||{}; h=h||{t:1,f:{},d:[]}; const A=ROOM_ART, t=Math.max(1,Math.min(5,h.t|0||1)), g=A.geo[t], ov=A.over[t]||{}, F=h.f||{};
+  const pt=(u,v)=>{ const [B,L,R,Fr]=g; return [B[0]+u*(R[0]-B[0])+v*(L[0]-B[0])+u*v*(Fr[0]-R[0]-L[0]+B[0]), B[1]+u*(R[1]-B[1])+v*(L[1]-B[1])+u*v*(Fr[1]-R[1]-L[1]+B[1])]; };
+  const its=[];
+  for(const k of Object.keys(ROOM_NAMES)){ const l=Math.max(0,Math.min(3,F[k]|0)); if(l) its.push({k,l,src:`f${l}_${k}`,n:FURN[ROOM_NAMES[k]].lv[l-1]}); }
+  for(const k of (h.d||[])){ const d=DECO.find(x=>x.k===k); if(d&&A.items[k]) its.push({k,l:0,src:'d_'+k,n:d.n}); }
+  const uv=k=>ov[k]||A.items[k].uv; its.sort((a,b)=>(uv(a.k)[0]+uv(a.k)[1])-(uv(b.k)[0]+uv(b.k)[1]));
+  const RA=4/3; let html='';
+  its.forEach((it,i)=>{ const sp=A.items[it.k], hh=Array.isArray(sp.h)?sp.h[it.l-1]:sp.h, [x,y0]=pt(...uv(it.k)), y=y0-(sp.z||0), asp=A.asp[it.src]||1, w=hh*asp/RA;
+    if(!sp.wall) html+=`<i class="ra-sh" style="left:${(x*100).toFixed(2)}%;top:${(y*100).toFixed(2)}%;width:${(w*92).toFixed(2)}%;z-index:${2*i+1}"></i>`;
+    html+=`<img class="ra-it${it.k==='neon'?' ra-neon':''}" data-act="roomitem" data-n="${esc(it.n)}" alt="${esc(it.n)}" title="${esc(it.n)}" src="${A.base}${it.src}.webp" style="left:${(x*100).toFixed(2)}%;top:${((y-hh)*100).toFixed(2)}%;height:${(hh*100).toFixed(2)}%;z-index:${2*i+2}" loading="lazy" decoding="async">`; });
+  return `<div class="room-art"><img class="ra-bg" src="${A.base}room${t}.webp" alt="" decoding="async">${html}${!its.length&&!opt.noHint?'<div class="ra-empty">Üres. Vegyél bútort, és megjelenik itt!</div>':''}</div>`;
+}
 function homeOpen(st=state){ return !!st&&st.level>=HOME_LVL(); }
 function homeOf(st=state){ const h=st&&st.home; return h&&typeof h==='object'?h:null; }
 function homeEnsure(){ if(!state.home) state.home={t:1,f:{},d:[],visit:''}; const h=state.home; h.f=h.f||{}; h.d=h.d||[]; h.t=Math.max(1,Math.min(5,h.t|0||1)); return h; }
@@ -3004,11 +3030,11 @@ function homeChip(h){ if(!h) return ''; const T=HOME_TIERS[(h.t||1)-1]; return `
 function openInsHome(){ const x=INSPECT; if(!x||!x.home) return; const T=HOME_TIERS[(x.home.t||1)-1];
   $('#overlay-root').innerHTML=`<div class="overlay" data-act="closeinsp"><div class="ins-card home-ins" role="dialog" aria-label="${esc(x.name)} lakása" data-act="noop">
     <button class="ins-x" data-act="closeinsp" aria-label="Bezárás">×</button><span class="label">🏠 ${esc(x.name)} lakása</span><h2 style="margin:2px 0">${T.n}</h2><div class="note">${T.w} · ${homeUsed(x.home)} tárgy · ${fmt(homeVal(x.home))} Ft értékben</div>
-    <div class="home-room">${roomSVG(x.home,{noHint:1})}</div><button class="btn" data-act="insback">${ic('back')}Vissza a profilhoz</button></div></div>`; }
+    <div class="home-room">${roomView(x.home,{noHint:1})}</div><button class="btn" data-act="insback">${ic('back')}Vissza a profilhoz</button></div></div>`; }
 function homeCard(){
   if(!homeOpen()) return `<section class="card home-card locked"><div class="row between"><div><div class="label">🏠 Albérlet</div><div class="note">A ${HOME_LVL()}. szinten kiköltözhetsz Icától, és saját lakást rendezhetsz be. A bútorok erősítik a hősödet.</div></div><span class="home-lock">${ic('lock')}${HOME_LVL()}. szint</span></div></section>`;
   const h=homeOf(), T=HOME_TIERS[((h&&h.t)||1)-1], vis=h&&h.visit!==todayKey();
-  return `<section class="card home-card" data-act="gohome" role="button" tabindex="0"><div class="home-mini">${roomSVG(h||{t:1},{noHint:1})}</div>
+  return `<section class="card home-card" data-act="gohome" role="button" tabindex="0"><div class="home-mini">${roomView(h||{t:1},{noHint:1})}</div>
     <div class="home-mini-tx"><div class="label">🏠 Albérlet${vis?'<span class="home-dot" title="Valaki kopogtat"></span>':''}</div><b>${T.n}</b><span class="note">${T.w}${h?` · ${homeUsed(h)}/${T.slots} hely`:' · költözz be!'}</span></div><span class="home-go">${ic('back')}</span></section>`;
 }
 function renderLakas(){
@@ -3017,7 +3043,7 @@ function renderLakas(){
   const bon=[['str','Erő'],['dex','Ügyesség'],['int','Ész'],['con','Kitartás'],['lck','Szerencse']].filter(([k])=>fx[k]).map(([k,n])=>`<span class="hb">${ic(k,'ic-'+k)}${n} +${Math.round(fx[k]*100)}%</span>`).join('')
     +(fx.coffee?`<span class="hb">${ic('coffee','ic-coffee')}+${fx.coffee} kávé éjfélkor</span>`:'')+(fx.gold?`<span class="hb">${ic('coin','ic-coin')}+${Math.round(fx.gold*100)}% forint</span>`:'');
   let html=`<section class="card home-hero"><button class="btn small home-back" data-act="view" data-v="karakter">${ic('back')}Karakter</button>
-    <div class="home-room">${roomSVG(h)}</div>
+    <div class="home-room">${roomView(h)}</div>
     <div class="home-tx"><span class="label">📍 ${T.w}</span><h2>${T.n}</h2><p>${T.d}</p><div class="home-slots"><i style="width:${Math.min(100,used/T.slots*100)}%"></i><b>${used}/${T.slots} hely</b></div></div></section>`;
   html+=`<section class="card"><div class="label">✨ A lakásod bonuszai</div><div class="home-bon">${bon||'<span class="note">Még üres. Vegyél bútorokat, és erősebb leszel.</span>'}</div></section>`;
   if(h.visit!==todayKey()){ const v=VISITORS[(new Date().getDate()+state.level)%VISITORS.length];
@@ -4997,7 +5023,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.17 16:19';
+const BUILD='2026.11.17 17:33';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
