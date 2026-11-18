@@ -5055,7 +5055,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.18 14:57';
+const BUILD='2026.11.18 15:01';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
@@ -5201,7 +5201,7 @@ async function gwFetch(){ if(!SB||!ONLINE.user||!state) return; const ch=guildCh
   const rs=await Promise.all(qs), m=new Map();
   for(const r of rs){ if(r.error){ console.warn(r.error); continue; } for(const row of r.data||[]) m.set(row.id,gwRow(row)); }
   const ids=[...m.keys()];
-  if(ids.length){ const {data,error}=await SB.from('guild_war_signups').select('*').in('war_id',ids); if(!error) for(const s of data||[]){ const w=m.get(s.war_id); if(w) w.signups.push({cid:s.char_id,side:s.side,name:s.name,cls:s.cls,sex:s.sex,level:s.level}); } }
+  if(ids.length){ const {data,error}=await SB.from('guild_war_signups').select('*').in('war_id',ids); if(!error) for(const s of data||[]){ if(s.created_at&&Date.parse(s.created_at)>Date.now()+5*60e3) continue; const w=m.get(s.war_id); if(w) w.signups.push({cid:s.char_id,side:s.side,name:s.name,cls:s.cls,sex:s.sex,level:s.level}); } }
   GW.wars=[...m.values()]; GW.at=now(); }
 async function gwInsert(war){ const {data,error}=await SB.from('guild_wars').insert({atk_ch:war.atk.ch,atk_name:war.atk.name,atk_emblem:war.atk.emblem,def_ch:war.def.ch,def_name:war.def.name,def_emblem:war.def.emblem,def_bot:war.def.bot||null,starts_at:new Date(war.starts).toISOString()}).select('*').single();
   if(error){ gwErr(error); return null; } const w=gwRow(data); GW.wars.push(w); return w; }
