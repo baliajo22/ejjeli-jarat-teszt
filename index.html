@@ -3880,7 +3880,7 @@ function renderMail(){
   const tabs=`<div class="seg" role="tablist"><button role="tab" data-act="mailtab" data-t="posta" aria-selected="${MAIL.tab==='posta'}">${ic('mail')}Posta</button><button role="tab" data-act="mailtab" data-t="baratok" aria-selected="${MAIL.tab==='baratok'}">${ic('friend')}Barátok</button></div>`;
   let body='';
   if(MAIL.tab==='thread'){
-    body=`<button class="btn small" data-act="mailtab" data-t="posta" style="align-self:flex-start">${ic('back')}Vissza</button><div class="row" style="gap:10px"><b style="font-size:16px">${esc(MAIL.name||'')}</b></div><div class="note mail-who">${ic('user')}Te itt ${esc(state.name)} hősként írsz.</div>
+    body=`<button class="btn small" data-act="mailtab" data-t="posta" style="align-self:flex-start">${ic('back')}Vissza</button><div class="row" style="gap:10px"><b style="font-size:16px">${esc(MAIL.name||'')}</b></div>
       <div class="mthread" id="mthread">${threadHtml()}</div>
       <div class="chat-in"><input id="mmsg" maxlength="500" placeholder="Üzenet ${esc(MAIL.name||'')} számára…" autocomplete="off"><button class="btn small primary" data-act="mailsend" aria-label="Küldés">${ic('send')}</button></div>`;
     setTimeout(()=>{ const t=$('#mthread'); if(t) t.scrollTop=1e6; },0);
@@ -5055,7 +5055,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.18 16:52';
+const BUILD='2026.11.18 16:55';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
