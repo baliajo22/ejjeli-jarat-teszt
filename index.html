@@ -4054,12 +4054,16 @@ function arenaBar(){ return `<div class="mg-bar" role="tablist">${[['arena','Ar�
 /* real players only: offline these are your own heroes on this device (the online build replaces this) */
 function realPlayers(){
   if(!ONLINE.playersAt||now()-ONLINE.playersAt>20000) setTimeout(loadPlayers,0);
-  const out=(ONLINE.all||[]).map(p=>{ const base={name:p.name,cls:p.cls,sex:p.sex||'m',level:p.level,score:p.rating,founder:!!(p.data&&p.data.founder)};
+  const out=(ONLINE.all||[]).map(p=>{ const base={name:p.name,cls:p.cls,sex:p.sex||'m',level:p.level,score:p.rating,rank:p.rank,top:!!p._top,founder:!!(p.data&&p.data.founder)};
     if(p.id===state.cid) return {...base,key:'me',sex:sexLook(state),name:state.name,level:state.level,score:ONLINE.myRating??p.rating,me:true};
     if(p.user_id===ONLINE.user.id) return {...base,key:'c-'+p.id,duel:'c-'+p.id};
     return {...base,key:'p-'+p.id,pduel:p.id}; });
   if(!out.some(x=>x.me)&&ONLINE.playersAt) out.push({key:'me',name:state.name,cls:state.cls,level:state.level,score:ONLINE.myRating??1000,me:true});
-  return out.sort((a,b)=>b.score-a.score||b.level-a.level);
+  out.sort((a,b)=>b.score-a.score||b.level-a.level);
+  // helyezés: a top 150 folyamatosan 1-től, a körülötted betöltöttek a szerver szerinti helyről folytatva
+  let k=0; const seg=[]; for(const x of out){ if(x.top) x.rank=++k; else seg.push(x); }
+  if(seg.length){ const j=seg.findIndex(x=>x.me); let st=(j>=0&&ONLINE.myRank)?ONLINE.myRank-j:(seg[0].rank||k+1); st=Math.max(k+1,st); seg.forEach((x,i)=>{ x.rank=st+i; }); }
+  return out;
 }
 function realPlayersOffline(){
   const me={key:'me',sex:sexLook(state),name:state.name,cls:state.cls,level:state.level,score:state.wins||0,me:true};
@@ -4091,21 +4095,22 @@ function rangPlayerRows(){ const L=realPlayers(), q=fold(RANG.q).trim(), left=Ma
   const hit=L.map((p,i)=>({p,i})).filter(({p})=>!q||fold(p.name).includes(q)||fold(CLASSES[p.cls]?CLASSES[p.cls].name:'').includes(q));
   if(!L.length) return `<p class="muted">Betöltés…</p>`;
   if(!hit.length) return `<p class="muted rang-none">Nincs „${esc(RANG.q)}” nevű játékos.</p>`;
-  return hit.slice(0,q?40:100).map(({p,i})=>`<div class="lad-row rl-row ${p.me?'me':''}" role="button" tabindex="0" data-act="inspect" data-id="${p.key}"><span class="lad-rank r${i<3?i+1:0}">${i+1}</span><span class="lad-pw">${portrait(artOf(p.cls,sexLook(p),p.name),frc(p.key,'lad-port'))}${petIc(p.key)}</span><span class="lad-name"><span class="lad-nm">${esc(p.name)}${founderBadge(p.founder||(p.data&&p.data.founder)||(p.me&&state.founder)?{founder:1}:null,true)}${p.me?' <em>te</em>':''}</span><small class="note">${p.level}. szint · ${CLASSES[p.cls]?CLASSES[p.cls].name:''}</small></span><span class="lad-lvl mono">${fmt(p.score)} <small>${REAL_SCORE_LABEL}</small></span>${p.me?'':`<button class="btn small ${left?'pog-btn':'primary'}" data-act="${p.pduel?'pduel':'duel'}" data-id="${p.pduel||p.duel}" ${left?`data-pog="1" ${(state.pog||0)<1?'disabled':''}`:''} aria-label="Kihívás">${left?pogIc()+'1':ic('fight')}</button>`}</div>`).join(''); }
+  const show=q?hit.slice(0,40):hit.filter(({p,i})=>i<100||(p.rank&&p.rank>150)||p.me); let prev=0;
+  return show.map(({p,i})=>{ const rk=p.rank||i+1, gap=prev&&rk-prev>1?`<div class="lad-gap">···</div>`:''; prev=rk; return gap+`<div class="lad-row rl-row ${p.me?'me':''}" role="button" tabindex="0" data-act="inspect" data-id="${p.key}"><span class="lad-rank r${rk<4?rk:0}">${rk}</span><span class="lad-pw">${portrait(artOf(p.cls,sexLook(p),p.name),frc(p.key,'lad-port'))}${petIc(p.key)}</span><span class="lad-name"><span class="lad-nm">${esc(p.name)}${founderBadge(p.founder||(p.data&&p.data.founder)||(p.me&&state.founder)?{founder:1}:null,true)}${p.me?' <em>te</em>':''}</span><small class="note">${p.level}. szint · ${CLASSES[p.cls]?CLASSES[p.cls].name:''}</small></span><span class="lad-lvl mono">${fmt(p.score)} <small>${REAL_SCORE_LABEL}</small></span>${p.me?'':`<button class="btn small ${left?'pog-btn':'primary'}" data-act="${p.pduel?'pduel':'duel'}" data-id="${p.pduel||p.duel}" ${left?`data-pog="1" ${(state.pog||0)<1?'disabled':''}`:''} aria-label="Kihívás">${left?pogIc()+'1':ic('fight')}</button>`}</div>`; }).join(''); }
 function rangGuildRows(){ const G=rankGuilds(), q=fold(RANG.q).trim();
   const hit=G.map((g,i)=>({g,i})).filter(({g})=>!q||fold(g.name).includes(q)||fold(g.leader).includes(q));
   if(!G.length) return `<p class="muted">${RANG_EMPTY_G}</p>`;
   if(!hit.length) return `<p class="muted rang-none">Nincs „${esc(RANG.q)}” nevű céh.</p>`;
   return hit.slice(0,q?40:100).map(({g,i})=>`<div class="lad-row rl-row ${g.mine?'me':''}" role="button" tabindex="0" data-act="viewguild" data-id="${g.lc}"><span class="lad-rank r${i<3?i+1:0}">${i+1}</span><div class="port lad-port g-mini">${svg(emblemSvg(g.emblem))}</div><span class="lad-name">${esc(g.name)}${g.mine?' <em>ti</em>':''}<small class="note">${g.size} fő · vezető: ${esc(g.leader)}</small></span><span class="lad-lvl mono">${fmt(g.honor)} <small>becsület</small></span></div>`).join(''); }
 function rangList(){ return RANG.tab==='ceh'?rangGuildRows():rangPlayerRows(); }
-function rangCount(){ return RANG.tab==='ceh'?`${rankGuilds().length} céh`:`${realPlayers().length} játékos`; }
+function rangCount(){ return RANG.tab==='ceh'?`${rankGuilds().length} céh`:`${(typeof ONLINE!=='undefined'&&ONLINE.total)||realPlayers().length} játékos`; }
 function rangRefresh(){ const l=$('#rlist'); if(l) l.innerHTML=rangList(); const x=$('#rclear'); if(x) x.hidden=!RANG.q; }
 function renderRang(){
   if(typeof syncLadder==='function') syncLadder();
   const P=realPlayers(), myP=P.findIndex(p=>p.me), G=rankGuilds(), myG=G.findIndex(g=>g.mine), gt=RANG.tab==='ceh';
   const seg=`<div class="seg" role="tablist">${[['jatekos','Játékosok','user'],['ceh','Céhek','fame']].map(([k,l,i])=>`<button role="tab" data-act="rangtab" data-t="${k}" aria-selected="${RANG.tab===k}">${ic(i)}${l}</button>`).join('')}</div>`;
   const me=gt?(myG>=0?`<div class="rang-me"><span class="label">${ic('fame')}A céhetek helye</span><b class="mono">#${myG+1}</b><small>/ ${G.length}</small></div>`:`<div class="rang-me"><span class="label">${ic('fame')}A céhetek helye</span><span class="note">${state.memberOf?'A céhed még nem került fel a listára.':'Még nem vagy céhben.'}</span></div>`)
-    :(myP>=0?`<div class="rang-me"><span class="label">${ic('trophy')}A helyezésed</span><b class="mono">#${myP+1}</b><small>/ ${P.length}</small></div>`:'');
+    :(myP>=0?`<div class="rang-me"><span class="label">${ic('trophy')}A helyezésed</span><b class="mono">#${P[myP].rank||myP+1}</b><small>/ ${(typeof ONLINE!=='undefined'&&ONLINE.total)||P.length}</small></div>`:'');
   return `<section class="scene"><span class="label">${ic('trophy')}Népliget · eredményjelző tábla</span><h2>A város legjobbjai</h2><p>${gt?'A játékosok céhei, becsület szerint. Koppints egy céhre, és megnézheted a tagjait.':REAL_NOTE}</p></section>
     ${seg}
     <section class="card rang-card">${me}
@@ -5204,7 +5209,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.18 17:33';
+const BUILD='2026.11.19 08:15';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
@@ -5272,9 +5277,20 @@ async function pubSelect(build){ const keys=pubKeys(); let res=await build((PUB_
   if(res&&res.data) res.data.forEach(r=>pubRow(r,keys)); return res; }
 async function loadPlayers(){
   if(!SB||!ONLINE.user||ONLINE.loadingPlayers) return; ONLINE.loadingPlayers=true;
-  try{ const {data,error}=await pubSelect(c=>SB.from('characters').select(c).order('rating',{ascending:false}).limit(150)); if(error) throw error;
+  try{ const {data:top,error}=await pubSelect(c=>SB.from('characters').select(c).order('rating',{ascending:false}).limit(150)); if(error) throw error;
+    let data=top.slice(); top.forEach(p=>{ p._top=1; }); ONLINE.myRank=null;
+    // a top 150 mellé: a pontos létszám, és ha a hősöd nincs benne, a körülötted állók a valódi helyezéssel
+    try{ const cnt=q=>PUB_SUS?q.eq('suspect',false):q;
+      const tot=await cnt(SB.from('characters').select('id',{count:'exact',head:true})); if(!tot.error&&tot.count!=null) ONLINE.total=tot.count;
+      if(state&&!top.some(p=>p.id===state.cid)){
+        const mr=await SB.from('characters').select('rating').eq('id',state.cid).maybeSingle(), r=mr.data?mr.data.rating:null;
+        if(r!=null){ const myA=await cnt(SB.from('characters').select('id',{count:'exact',head:true}).gt('rating',r)); ONLINE.myRank=myA.error||myA.count==null?null:myA.count+1;
+          const [up,dn]=await Promise.all([pubSelect(c=>SB.from('characters').select(c).gt('rating',r).order('rating',{ascending:true}).limit(12)),pubSelect(c=>SB.from('characters').select(c).lte('rating',r).order('rating',{ascending:false}).limit(25))]);
+          const nb=[...((up.data||[]).slice().reverse()),...(dn.data||[])].filter(p=>!data.some(q=>q.id===p.id)&&(!p.suspect||p.user_id===ONLINE.user.id));
+          if(nb.length){ nb.sort((a,b)=>b.rating-a.rating); const ab=await cnt(SB.from('characters').select('id',{count:'exact',head:true}).gt('rating',nb[0].rating)); const base=ab.error||ab.count==null?150:ab.count; nb.forEach((p,i)=>{ p.rank=base+1+i; }); data=data.concat(nb); } } } }
+    catch(e){ console.warn('rank window',e); }
     const mine=data.find(p=>state&&p.id===state.cid); if(mine&&mine.suspect&&!ONLINE.susNote){ ONLINE.susNote=true; toast('A szerver szokatlan változást észlelt a hősödnél, ezért egyelőre nem jelenik meg a ranglistán és nem harcolhat az arénában. Ha tévedés, szólj a játék gazdájának.'); }
-    ONLINE.all=data.filter(p=>p.data&&p.data.stats&&(!p.suspect||p.user_id===ONLINE.user.id)); ONLINE.all.forEach(p=>{ p.sex=(p.data.sex||'m')+(p.data.look&&p.data.look<lookCount(p.cls,p.data.sex||'m')?p.data.look:''); }); ONLINE.players=ONLINE.all.filter(p=>p.user_id!==ONLINE.user.id); const me=data.find(p=>state&&p.id===state.cid); ONLINE.myRating=me?me.rating:1000; ONLINE.playersAt=now();
+    ONLINE.all=data.filter(p=>p.data&&p.data.stats&&(!p.suspect||p.user_id===ONLINE.user.id)); { let k=0; ONLINE.all.forEach(p=>{ if(p._top) p.rank=++k; }); } ONLINE.all.forEach(p=>{ p.sex=(p.data.sex||'m')+(p.data.look&&p.data.look<lookCount(p.cls,p.data.sex||'m')?p.data.look:''); }); ONLINE.players=ONLINE.all.filter(p=>p.user_id!==ONLINE.user.id); const me=data.find(p=>state&&p.id===state.cid); ONLINE.myRating=me?me.rating:1000; ONLINE.playersAt=now();
     if((view==='arena'||view==='ceh')&&!battle) render(); if(view==='rang'&&!battle){ if($('#rsearch')===document.activeElement) rangRefresh(); else render(); } }
   catch(e){ ONLINE.playersAt=now(); console.warn(e); } finally{ ONLINE.loadingPlayers=false; }
 }
@@ -5745,7 +5761,7 @@ function renderArenaOnline(){
   const left=Math.max(0,state.arenaReadyAt-now()), P=realPlayers(), myI=P.findIndex(p=>p.me), N=P.length;
   let html=`${banner('arena')}<section class="scene"><span class="label">${ic('pin')}Népliget · régi buszgarázs</span><h2>Más hősök is erre járnak</h2><p>Hívj ki valakit, aki előtted áll a ranglétrán. Győzelemmel rangpontot szerzel, vereséggel veszítesz.</p></section>
   <section class="card rank-card">
-    <div class="rank-big"><span class="label">${ic('trophy')}Rangod</span><div class="rank-num">${myI>=0?'#'+(myI+1):'–'}<small>/ ${N||'–'}</small></div>${ONLINE.myRating!=null?`<span class="note">${ONLINE.myRating} rangpont</span>`:''}</div>
+    <div class="rank-big"><span class="label">${ic('trophy')}Rangod</span><div class="rank-num">${myI>=0?'#'+(P[myI].rank||myI+1):'–'}<small>/ ${ONLINE.total||N||'–'}</small></div>${ONLINE.myRating!=null?`<span class="note">${ONLINE.myRating} rangpont</span>`:''}</div>
     <div class="rank-side"><div><div class="label">Mérleg</div><div class="mono">${state.wins} gy · ${state.losses} v</div></div><div><div class="label">${ic('clock')}Következő meccs</div><div class="mono" id="acd">${left?fmtTime(left):'Most'}</div></div></div>
   </section>`;
   if(!ONLINE.playersAt) return html+`<section class="card"><p class="muted" style="margin:0">Betöltés…</p></section>`;
@@ -5758,7 +5774,7 @@ function renderArenaOnline(){
   if(!foes.length) html+=`<p class="muted" style="margin:6px 0 0">Most nincs kihívható játékos.</p>`;
   for(const i of foes){ const x=P[i], p0=ONLINE.players.find(q=>q.id===x.pduel); if(!p0) continue; const f=heroFighter(p0.data);
     html+=`<div class="opp">${portrait(artOf(x.cls,x.sex,x.name),frc(x.key)).replace('<div','<div data-act="inspect" data-id="'+x.key+'"')}
-      <div data-act="inspect" data-id="${x.key}" class="insp"><div class="item-name"><span class="rank-tag">#${i+1}</span> ${esc(x.name)}${typeof founderBadge==='function'?founderBadge(x,true):''}</div><div class="item-stats"><span>${x.level}. szint · ${CLASSES[x.cls]?CLASSES[x.cls].name:''}</span><span class="with-ic">${ic('trophy','ic-fame')}${x.score}</span><span class="with-ic">${ic('con','ic-hp')}${fmt(f.hp)}</span></div></div>
+      <div data-act="inspect" data-id="${x.key}" class="insp"><div class="item-name"><span class="rank-tag">#${x.rank||i+1}</span> ${esc(x.name)}${typeof founderBadge==='function'?founderBadge(x,true):''}</div><div class="item-stats"><span>${x.level}. szint · ${CLASSES[x.cls]?CLASSES[x.cls].name:''}</span><span class="with-ic">${ic('trophy','ic-fame')}${x.score}</span><span class="with-ic">${ic('con','ic-hp')}${fmt(f.hp)}</span></div></div>
       ${left?`<button class="btn small pog-btn" data-act="pduel" data-pog="1" data-id="${x.pduel}" ${(state.pog||0)<1?'disabled':''}>${pogIc()}1 · Kihív most</button>`:`<button class="btn small primary" data-act="pduel" data-id="${x.pduel}">${ic('fight')}Kihív</button>`}</div>`; }
   // ranglétra: te középen, körülötted 4-4 játékos (a lista elején/végén eltolva)
   const span=4; let a=Math.max(0,myI-span), b=Math.min(N-1,myI+span);
@@ -5766,10 +5782,11 @@ function renderArenaOnline(){
   if(myI<0){ a=0; b=Math.min(N-1,2*span); }
   let rows='';
   if(a>0) rows+=`<div class="lad-gap">···</div>`;
-  for(let i=a;i<=b;i++){ const x=P[i];
-    rows+=`<div class="lad-row ${x.me?'me':'real'}" role="button" tabindex="0" data-act="inspect" data-id="${x.key}"><span class="lad-rank r${i<3?i+1:0}">${i+1}</span><span class="lad-pw">${portrait(artOf(x.cls,x.sex,x.name),frc(x.key,'lad-port'))}${petIc(x.key)}</span><span class="lad-name">${esc(x.name)}${x.me?' <em>te</em>':''}${typeof founderBadge==='function'?founderBadge(x,true):''}</span><span class="lad-lvl mono">${x.level}. sz · ${x.score} p</span></div>`; }
+  for(let i=a;i<=b;i++){ const x=P[i], rk=x.rank||i+1;
+    if(i>a&&P[i-1].rank&&x.rank&&x.rank-P[i-1].rank>1) rows+=`<div class="lad-gap">···</div>`;
+    rows+=`<div class="lad-row ${x.me?'me':'real'}" role="button" tabindex="0" data-act="inspect" data-id="${x.key}"><span class="lad-rank r${rk<4?rk:0}">${rk}</span><span class="lad-pw">${portrait(artOf(x.cls,x.sex,x.name),frc(x.key,'lad-port'))}${petIc(x.key)}</span><span class="lad-name">${esc(x.name)}${x.me?' <em>te</em>':''}${typeof founderBadge==='function'?founderBadge(x,true):''}</span><span class="lad-lvl mono">${x.level}. sz · ${x.score} p</span></div>`; }
   if(b<N-1) rows+=`<div class="lad-gap">···</div>`;
-  html+=`</section><section class="card"><div class="row between" style="margin-bottom:8px"><span class="label">${ic('trophy')}Ranglétra</span><span class="note">${N} hős a városban</span></div><div class="ladder">${rows}</div><button class="btn small" data-act="view" data-v="rang" style="margin-top:8px">${ic('trophy')}Teljes ranglista</button></section>`;
+  html+=`</section><section class="card"><div class="row between" style="margin-bottom:8px"><span class="label">${ic('trophy')}Ranglétra</span><span class="note">${ONLINE.total||N} hős a városban</span></div><div class="ladder">${rows}</div><button class="btn small" data-act="view" data-v="rang" style="margin-top:8px">${ic('trophy')}Teljes ranglista</button></section>`;
   return html;
 }
 { const _ba=renderArena; renderArena=function(){ return (typeof ONLINE!=='undefined'&&ONLINE.user&&SB)?renderArenaOnline():_ba(); }; }
