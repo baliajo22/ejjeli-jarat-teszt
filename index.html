@@ -3343,10 +3343,10 @@ function advOpen(d){ const st=advState(d); if(st==='open'||st==='lock') return;
     :x.k==='chest'?`<div class="crw">${ic('pin')}<div><b>+${x.n} heti láda</b><div class="note">A Kocsmában nyithatod ki.</div></div></div>`
     :x.k==='frame'?`<div class="crw">${ic('user')}<div><b>Új portrékeret: ${esc(FRAME_BY[x.f].n)}</b></div></div>`
     :`<div class="crw">${ic('coin','ic-gold')}<div><b>+${fmt(x.n)} Ft</b></div></div>`;
-  $('#overlay-root').innerHTML=`<div class="overlay" data-act="close"><div class="mg-card adv-pop" data-act="noop" role="dialog" aria-label="${d}. ablak">
+  $('#overlay-root').innerHTML=`<div class="overlay" data-act="closemg"><div class="mg-card adv-pop" data-act="noop" role="dialog" aria-label="${d}. ablak">
     <div class="adv-snow"></div><span class="label">🎄 Adventi naptár · ${d}. ablak</span><h2>${d===24?'Boldog karácsonyt!':d===6?'Itt a Mikulás!':'Meglepetés!'}</h2>
     <p class="adv-t">„${esc(ADV[d-1].t)}”</p><div class="chest-rw">${rw.map(row).join('')}</div>
-    <button class="btn primary" data-act="close" style="margin-top:12px">Köszönöm!</button></div></div>`;
+    <button class="btn primary" data-act="closemg" style="margin-top:12px;width:100%">Köszönöm!</button></div></div>`;
   render(); }
 
 function render(){
@@ -5300,7 +5300,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.20 12:58';
+const BUILD='2026.11.20 13:04';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
