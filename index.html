@@ -1574,6 +1574,30 @@ html[lang=en] .logo::after{content:"Budapest";display:block;margin-top:8px;font-
 @keyframes advFloat{50%{transform:translateY(-6px)}}
 .adv-ttl{color:#ffe08a;text-shadow:0 2px 10px #00000080}
 .adv-t{font-style:italic;color:#f5ecd6;margin:4px 0 12px;position:relative}
+/* ---- téli téma ---- */
+html.winter{--night:#0c1626;--concrete:#16243a;--panel:#1d2f49;--line:#3a5577;--muted:#a9bfd8;--text:#f2f7ff}
+html.winter body{background:linear-gradient(180deg,#0b1424 0%,#10213a 55%,#1a2f4d 100%) fixed}
+html.winter .card{border-color:#4d6f96;box-shadow:inset 0 1px 0 #ffffff1f,0 6px 18px -10px #000c}
+html.winter .card::before{left:6px;right:6px;top:-5px;height:9px;border-radius:6px 6px 2px 2px;background:radial-gradient(ellipse 9px 6px at 50% 100%,#fff 60%,transparent 64%) 0 0/18px 8px repeat-x;filter:drop-shadow(0 1px 1px #8fb6dd88);opacity:.95}
+html.winter .hud{background:linear-gradient(180deg,rgba(196,222,248,.22),rgba(22,38,62,.85));border-bottom:1px solid #cfe6ff55}
+html.winter .hud::after{height:14px;bottom:-13px;opacity:.95;filter:drop-shadow(0 2px 2px #0006);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='14' viewBox='0 0 60 14'%3E%3Cpath d='M0 0h60v3l-3 1-2 9-2-9-5 1-1 5-2-5-6 1-2 7-2-7-5 0-1 4-2-4-6 1-2 8-2-8-5 1-1 4-2-4-4 0z' fill='%23e8f6ff' fill-opacity='.9'/%3E%3C/svg%3E") 0 0/60px 14px repeat-x}
+html.winter .tabs .in{background:linear-gradient(180deg,#f6fbff,#d9e8f7);box-shadow:0 -6px 24px -8px #000a,inset 0 1px 0 #fff;position:relative}
+html.winter .tabs .in::before{content:"";position:absolute;left:10px;right:10px;top:-6px;height:10px;border-radius:8px;background:radial-gradient(ellipse 9px 6px at 50% 100%,#fff 60%,transparent 64%) 0 0/18px 8px repeat-x;filter:drop-shadow(0 -1px 1px #9cc1e6)}
+html.winter .tab{color:#3d5373}
+html.winter .tab svg{color:#3d5373}
+html.winter .tab[aria-current="page"]{color:#c21f30;background:radial-gradient(80% 90% at 50% 30%,rgba(200,32,47,.18),rgba(200,32,47,.04) 70%);box-shadow:inset 0 0 0 1px rgba(200,32,47,.35)}
+html.winter .tab[aria-current="page"] svg{color:#c21f30;filter:drop-shadow(0 0 4px rgba(200,32,47,.5))}
+html.winter .tab[aria-current="page"]::before{background:#c21f30;box-shadow:0 0 8px #c21f30}
+html.winter .btn.primary{background:linear-gradient(160deg,#ff6b6b,#d62839 55%,#a51728);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 16px -6px rgba(214,40,57,.7);position:relative}
+html.winter .btn.primary::after{content:"";position:absolute;left:8px;right:8px;top:-4px;height:7px;border-radius:5px;background:radial-gradient(ellipse 9px 6px at 50% 100%,#fff 60%,transparent 64%) 0 0/18px 8px repeat-x;pointer-events:none}
+html.winter .mg-card,html.winter .sheet{border-color:#cfe6ff;background:radial-gradient(120% 50% at 50% 0%,rgba(207,230,255,.16),transparent 60%),var(--concrete)}
+html.winter .label{color:#cfe6ff}
+#snowfall{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+#snowfall i{position:absolute;inset:-100% 0 0 0;background-image:radial-gradient(3px 3px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 140px 80px,#fff,transparent),radial-gradient(2.5px 2.5px at 260px 20px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 150px,#fff,transparent),radial-gradient(2px 2px at 200px 190px,#fff,transparent),radial-gradient(3px 3px at 330px 130px,#fff,transparent);background-size:360px 220px;opacity:.55;animation:snowFall 22s linear infinite}
+#snowfall i:nth-child(2){background-size:260px 180px;opacity:.35;animation-duration:32s;filter:blur(1px)}
+#snowfall i:nth-child(3){background-size:480px 300px;opacity:.7;animation-duration:15s}
+@keyframes snowFall{from{transform:translate3d(0,0,0)}to{transform:translate3d(-40px,50%,0)}}
+@media (prefers-reduced-motion:reduce){#snowfall{display:none}}
 </style>
 <style>
 #ej-test-bar{position:fixed;left:0;right:0;top:0;z-index:100000;background:repeating-linear-gradient(45deg,#ffd400 0 14px,#111 14px 28px);height:6px;pointer-events:none}
@@ -3367,7 +3391,15 @@ function advOpen(d){ const st=advState(d); if(st==='open'||st==='lock') return;
     <button class="btn primary" data-act="closemg" style="margin-top:12px;width:100%">Köszönöm!</button></div></div>`;
   render(); }
 
+/* ================= téli téma: december 1. – január 6. (budapesti idő), a teszt oldalon mindig ================= */
+function winterOn(){ if(typeof window!=='undefined'&&window.EJ_TEST) return true; try{ if(localStorage.getItem('ej-winter')==='off') return false; }catch(e){}
+  const b=(typeof budNow==='function'?budNow().b:new Date()), m=b.getMonth(), d=b.getDate(); return m===11||(m===0&&d<=6); }
+function applyWinter(){ const on=winterOn(), h=document.documentElement; if(h.classList.contains('winter')!==on) h.classList.toggle('winter',on);
+  if(on&&!document.getElementById('snowfall')){ const el=document.createElement('div'); el.id='snowfall'; el.setAttribute('aria-hidden','true'); el.innerHTML='<i></i><i></i><i></i>'; document.body.appendChild(el); }
+  if(!on){ const el=document.getElementById('snowfall'); if(el) el.remove(); } }
+
 function render(){
+  applyWinter();
   const app=$('#app');
   hideTip();
   if(!SB){ app.innerHTML=renderNoConfig(); return; }
@@ -5318,7 +5350,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.20 13:11';
+const BUILD='2026.11.20 17:34';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
