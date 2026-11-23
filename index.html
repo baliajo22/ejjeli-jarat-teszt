@@ -3964,14 +3964,10 @@ let LOGIN_SHOWN=null;
 /* ================= Újdonságok: belépéskor felugró frissítési napló ================= */
 // A legfrissebb bejegyzés legyen elöl. Új frissítésnél új id kell: akkor azoknak is újra feljön, akik kipipálták.
 const NEWS=[
-  {id:'2026-11-23',d:HT('november 23.','23 November'),items:[
-    ['🌙',HT('Hétvégi éjszakai műszak','Weekend night shift'),HT('Péntek 18:00-tól vasárnap éjfélig bónusz jár: egyik hétvégén +50% forint, a másikon +50% XP, felváltva.','From Friday 18:00 to Sunday midnight there is a bonus: +50% forints one weekend, +50% XP the next, alternating.')],
-    ['🛍️',HT('Black Friday Icánál','Black Friday at Ica\'s'),HT('A pogácsacsomagok 20–30% kedvezménnyel kaphatók november 29-ig.','Scone packs are 20–30% off until 29 November.')],
-    ['⚔️',HT('Megújult aréna','Arena revamp'),HT('Az arénában már csak valódi játékosok vannak, és a létrán te állsz középen, a hozzád közeliek között.','The arena now only has real players, and you sit in the middle of the ladder among those close to you.')],
-    ['🏆',HT('Pontos helyezés','Your true rank'),HT('A ranglétrán az első 150 után is látod a pontos helyedet és a szomszédaidat.','On the ranking you see your exact place and your neighbours even beyond the top 150.')],
-    ['🛡️',HT('Céhharc','Guild wars'),HT('A gépi tagok név szerint látszanak, a gépi céhek pedig fokozatosan jelentkeznek a harcra.','Bot members are shown by name, and bot guilds sign up for wars gradually.')],
-    ['✉️',HT('Hősönkénti posta és visszajelzés','Per-hero mail and feedback'),HT('Minden hősnek külön postaládája van. A Kocsma alján egy gombbal írhatsz nekünk, ha hibát találtál vagy ötleted van.','Every hero has their own mailbox. At the bottom of the Tavern you can write to us about bugs or ideas.')],
-    ['✅',HT('Napi feladatok','Daily tasks'),HT('Az online arénaharcok is beleszámítanak az arénás napi feladatokba.','Online arena fights now count toward the arena daily tasks.')]]}
+  {id:'2026-11-24',d:HT('november 24.','24 November'),items:[
+    ['🕳️',HT('Új: A Mélység','New: The Abyss'),HT('Végtelen kazamata az 50. szinttől (Kazamata fül → A Mélység). Minden emelet egy szinttel erősebb, minden tizediken főgonosz vár pogácsával és különleges tárggyal. Új szörnyek, címek és saját ranglista: ki jut le a legmélyebbre?','An endless dungeon from level 50 (Dungeon tab → The Abyss). Every floor is one level stronger, and every tenth has a boss with a scone and a special item. New monsters, titles and its own ranking: who gets the deepest?')],
+    ['🖼️',HT('Portrékeretek','Portrait frames'),HT('Festett keretek pogácsáért a Karakter fülön, Panelszürkétől Az Éjszaka Királyáig. Mindenki látja: a ranglétrán, az arénában, harcban és a postában is. A Téli fagy limitált, csak december 1. és január 6. között vehető meg.','Painted frames for scones on the Character tab, from Panel Grey to King of the Night. Everyone sees it: on the ranking, in the arena, in fights and in the mail. Winter Frost is limited, only buyable between 1 December and 6 January.')],
+    ['🛍️',HT('Black Friday Icánál','Black Friday at Ica\'s'),HT('A pogácsacsomagok 20–30% kedvezménnyel kaphatók november 29-ig.','Scone packs are 20–30% off until 29 November.')]]}
 ];
 const NEWS_KEY='ej-news-hide';
 let NEWS_SHOWN=false;
@@ -5587,7 +5583,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 23:40';
+const BUILD='2026.11.23 23:48';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
