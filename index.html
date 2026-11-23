@@ -3528,17 +3528,17 @@ const DEEP_BOSS=['A Mélység Kapusa','A Fenék Királya','Az Örök Sötétség
 const DEEP_TITLES=[[25,'Mélységjáró'],[50,'A Sötét Bányász'],[100,'A Mélység Ura'],[200,'Akinek nincs feneke']];
 function deepSt(){ return state.deep=state.deep||{f:1,best:0}; }
 function deepRnd(n){ const v=Math.sin(n*12.9898)*43758.5453; return v-Math.floor(v); }
-function deepFoe(f){ const boss=f%5===0, ej=DUNGEONS.find(d=>d.id===FINAL_ID), b0=dungeonFoe(ej,4);   // 1. emelet ≈ az Éjfél Szíve 5. emelete
+function deepFoe(f){ const boss=f%10===0, ej=DUNGEONS.find(d=>d.id===FINAL_ID), b0=dungeonFoe(ej,4);   // 1. emelet ≈ az Éjfél Szíve 5. emelete
   const lvl=b0.level+Math.floor((f-1)*.4), mult=b0.mult*(1+(f-1)*.006)*(boss?1.08:1);
   const arts=Object.keys(ENEMY_ART).filter(k=>!k.startsWith('boss_')), bossArts=Object.keys(ENEMY_ART).filter(k=>k.startsWith('boss_'));
-  const name=boss?DEEP_BOSS[Math.floor(f/5-1)%DEEP_BOSS.length]:`${DEEP_A[Math.floor(deepRnd(f)*DEEP_A.length)]} ${DEEP_B[Math.floor(deepRnd(f+.5)*DEEP_B.length)]}`;
+  const name=boss?DEEP_BOSS[Math.floor(f/10-1)%DEEP_BOSS.length]:`${DEEP_A[Math.floor(deepRnd(f)*DEEP_A.length)]} ${DEEP_B[Math.floor(deepRnd(f+.5)*DEEP_B.length)]}`;
   const art=boss?bossArts[Math.floor(deepRnd(f+.25)*bossArts.length)]:arts[Math.floor(deepRnd(f+.75)*arts.length)];
   return {name, art, level:lvl, boss, hp:1, cls:Object.keys(CLASSES)[Math.floor(deepRnd(f+.33)*Object.keys(CLASSES).length)], mult,
     gold:Math.round((20+lvl*14)*(boss?3:1)*DUNG_PAY*goldMult()), xp:Math.round((40+lvl*22)*(boss?2:1)*DUNG_PAY*xpMult())}; }
 function deepBoard(){ const L=(typeof realPlayers==='function'?realPlayers():[]).map(x=>{ const d=x.me?state:(typeof realData==='function'&&x.key?realData(String(x.key).replace(/^[cp]-/,'')):null); return {...x,best:(d&&d.deep&&d.deep.best)||0}; }).filter(x=>x.best>0||x.me);
   return L.sort((a,b)=>b.best-a.best||b.level-a.level).slice(0,10); }
 function renderDeep(){
-  let html=`${kazBar()}<section class="scene deep-scene"><span class="label">${ic('down')}A város legalja</span><h2>A Mélység</h2><p>A Hajnal Szíve alatt is van még lejjebb. A Mélységnek nincs alja: minden emelet erősebb az előzőnél, minden ötödiken egy főgonosz vár. Te meddig jutsz le?</p></section>`;
+  let html=`${kazBar()}<section class="scene deep-scene"><span class="label">${ic('down')}A város legalja</span><h2>A Mélység</h2><p>A Hajnal Szíve alatt is van még lejjebb. A Mélységnek nincs alja: minden emelet erősebb az előzőnél, minden tizediken egy főgonosz vár. Te meddig jutsz le?</p></section>`;
   if(state.level<DEEP_LVL) return html+`<section class="card lock-card">${ic('lock')}<div><h3>A ${DEEP_LVL}. szinten nyílik meg</h3><p class="muted">Még ${DEEP_LVL-state.level} szintet kell lépned.</p></div></section>`;
   const D=deepSt(), f=D.f, left=Math.max(0,(state.dungeonReadyAt||0)-now()), x=deepFoe(f);
   const nextT=DEEP_TITLES.find(t=>D.best<t[0]);
@@ -3559,7 +3559,7 @@ function doDeep(pay){
   if(res.win){
     D.f=f+1; D.best=Math.max(D.best||0,f); const g=Math.round(x.gold*(typeof petGold==='function'?petGold():1)), xp=Math.round(x.xp*(typeof petXp==='function'?petXp():1)); state.gold+=g; track('dungeon',1);
     rw=`<span class="chip">${ic('coin','ic-gold')}+${fmt(g)} Ft</span><span class="chip">${ic('xp','ic-xp')}+${fmt(xp)} XP</span>`;
-    if(x.boss||Math.random()<FLOOR_DROP){ const sp=x.boss||Math.random()<SPECIAL_CHANCE, it=genItem(Math.max(state.level,x.level),null,null,sp?SPECIAL_RAR:undefined), ok=addItem(it); if(sp) rw+=`<span class="chip r4" style="font-weight:700">${ic('xp')}Különleges zsákmány!</span>`; rw+=`<span class="chip loot" data-tip="loot:${(LOOT[it.id]=it).id}" style="padding:3px 10px 3px 3px">${itemTile(it).replace('class="itile','style="width:30px;height:30px;border-radius:999px" class="itile')}<span class="r${it.rar}">${esc(it.name)}</span>${ok?'':' (eladva, tele a hátizsák)'}</span>`; }
+    if(x.boss||Math.random()<FLOOR_DROP){ const sp=x.boss, it=genItem(Math.max(state.level,x.level),null,null,sp?SPECIAL_RAR:undefined), ok=addItem(it); if(sp) rw+=`<span class="chip r4" style="font-weight:700">${ic('xp')}Különleges zsákmány!</span>`; rw+=`<span class="chip loot" data-tip="loot:${(LOOT[it.id]=it).id}" style="padding:3px 10px 3px 3px">${itemTile(it).replace('class="itile','style="width:30px;height:30px;border-radius:999px" class="itile')}<span class="r${it.rar}">${esc(it.name)}</span>${ok?'':' (eladva, tele a hátizsák)'}</span>`; }
     if(x.boss){ state.pog=(state.pog||0)+1; rw+=pogChip(1); }
     const t=DEEP_TITLES.find(t=>t[0]===f); if(t){ state.titles=Array.from(new Set([...(state.titles||[]),t[1]])); rw+=`<span class="chip r4" style="font-weight:700">${ic('trophy')}Új cím: ${t[1]}</span>`; }
     rw+=`<span class="chip">${ic('down')}Nyitva: ${f+1}. emelet</span>`;
