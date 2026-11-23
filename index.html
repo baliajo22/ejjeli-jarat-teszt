@@ -3575,7 +3575,7 @@ function doDeep(pay){
   if(res.win){
     D.f=f+1; D.best=Math.max(D.best||0,f); const g=Math.round(x.gold*(typeof petGold==='function'?petGold():1)), xp=Math.round(x.xp*(typeof petXp==='function'?petXp():1)); state.gold+=g; track('dungeon',1);
     rw=`<span class="chip">${ic('coin','ic-gold')}+${fmt(g)} Ft</span><span class="chip">${ic('xp','ic-xp')}+${fmt(xp)} XP</span>`;
-    if(x.boss||Math.random()<FLOOR_DROP){ const sp=x.boss, it=genItem(Math.max(state.level,x.level),null,null,sp?SPECIAL_RAR:undefined), ok=addItem(it); if(sp) rw+=`<span class="chip r4" style="font-weight:700">${ic('xp')}Különleges zsákmány!</span>`; rw+=`<span class="chip loot" data-tip="loot:${(LOOT[it.id]=it).id}" style="padding:3px 10px 3px 3px">${itemTile(it).replace('class="itile','style="width:30px;height:30px;border-radius:999px" class="itile')}<span class="r${it.rar}">${esc(it.name)}</span>${ok?'':' (eladva, tele a hátizsák)'}</span>`; }
+    if(x.boss||Math.random()<FLOOR_DROP){ const sp=x.boss, it=genItem(x.level,null,null,sp?SPECIAL_RAR:undefined), ok=addItem(it); if(sp) rw+=`<span class="chip r4" style="font-weight:700">${ic('xp')}Különleges zsákmány!</span>`; rw+=`<span class="chip loot" data-tip="loot:${(LOOT[it.id]=it).id}" style="padding:3px 10px 3px 3px">${itemTile(it).replace('class="itile','style="width:30px;height:30px;border-radius:999px" class="itile')}<span class="r${it.rar}">${esc(it.name)}</span>${ok?'':' (eladva, tele a hátizsák)'}</span>`; }
     if(x.boss){ state.pog=(state.pog||0)+1; rw+=pogChip(1); }
     const t=DEEP_TITLES.find(t=>t[0]===f); if(t){ state.titles=Array.from(new Set([...(state.titles||[]),t[1]])); rw+=`<span class="chip r4" style="font-weight:700">${ic('trophy')}Új cím: ${t[1]}</span>`; }
     rw+=`<span class="chip">${ic('down')}Nyitva: ${f+1}. emelet</span>`;
@@ -5549,7 +5549,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 22:49';
+const BUILD='2026.11.23 23:05';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
