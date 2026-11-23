@@ -101,7 +101,7 @@
 .port.fr.fr-img.fr-panel::after{inset:-17%;width:auto;height:auto;padding:0;background:none;-webkit-mask:none;mask:none;border:0 solid transparent;border-image-source:url(keret/panel_doll.webp);border-image-slice:15.3% 14.1% 16.5% 14.8%;border-image-width:13%;border-image-repeat:stretch}.port.fr.lad-port.fr-img.fr-panel::after,.port.fr.cmsg-p.fr-img.fr-panel::after,.gw-sg .port.fr.fr-img.fr-panel::after{inset:-17%}
 .port.fr.fr-img.fr-villamos::after{inset:-17%;width:auto;height:auto;padding:0;background:none;-webkit-mask:none;mask:none;border:0 solid transparent;border-image-source:url(keret/villamos_doll.webp);border-image-slice:18.8% 15.9% 15.6% 16.4%;border-image-width:13%;border-image-repeat:stretch}.port.fr.lad-port.fr-img.fr-villamos::after,.port.fr.cmsg-p.fr-img.fr-villamos::after,.gw-sg .port.fr.fr-img.fr-villamos::after{inset:-17%}
 .doll{aspect-ratio:3/4;width:min(100%,440px);margin-inline:auto;container-type:inline-size;padding:16px 14px 16px}.doll,.doll:has(>.dollframe.fr-dimg){align-content:stretch;grid-template-rows:1fr}.doll .doll-col{display:flex;flex-direction:column;justify-content:space-around;align-items:center;height:100%}.doll .doll-col:not(:has(>.help-btn))::after{content:'';display:block;height:30px;flex:none}.doll .dslot .itile{width:clamp(40px,15.5cqw,84px);height:clamp(40px,15.5cqw,84px)}.doll .doll-center{justify-content:space-around;height:100%}.doll .doll-live,.doll .doll-pw{width:min(100%,46cqw)}.doll .wslot .itile{width:clamp(40px,14cqw,76px);height:clamp(40px,14cqw,76px)}.doll:has(>.dollframe.fr-dimg){gap:1.5cqw}.doll:has(>.dollframe.fr-dimg) .dslot .itile{width:clamp(40px,14cqw,80px);height:clamp(40px,14cqw,80px)}.doll:has(>.dollframe.fr-dimg) .wslot .itile{width:clamp(40px,12.5cqw,72px);height:clamp(40px,12.5cqw,72px)}.doll:has(>.dollframe.fr-dimg) .dslot-l{font-size:clamp(8px,2cqw,10px);letter-spacing:.03em}.doll:has(>.dollframe.fr-dimg) .doll-live,.doll:has(>.dollframe.fr-dimg) .doll-pw{width:min(100%,40cqw)}.doll:has(>.dollframe.fr-dimg) .doll-col:not(:has(>.help-btn))::after{height:26px}
-.fighter:has(.port.fr-img) .pw{margin:12px 12px 10px}
+.fighter:has(.port.fr-img) .pw{margin:12px 12px 10px}.pw>.port.ghost{position:absolute!important;inset:0;margin:0}
 .lad-row{grid-template-columns:34px 46px 1fr auto;padding:9px 10px;gap:12px}.lad-port{width:42px;height:42px}.opp{grid-template-columns:64px 1fr auto}.opp .port{width:58px;height:58px}
 .fb-hero{display:flex;flex-direction:column;gap:6px;margin:10px 0 2px;font-size:13px;color:var(--muted)}.fb-hero select{font:inherit;font-size:15px;color:var(--text,#fff);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}.fb-mini{display:flex;justify-content:center;margin:14px 0 4px}.fb-mini-btn{font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer}.fb-mini-btn:hover{color:var(--text,#fff);border-color:var(--muted)}html.in-play .fb-mini{display:flex}</style>
 <style>@font-face{font-family:"Bangers";src:url("fonts/Bangers-Regular.ttf") format("truetype");font-display:swap}@font-face{font-family:"Rubik";src:url("fonts/Rubik.ttf") format("truetype");font-weight:300 900;font-display:swap}</style>
@@ -1708,6 +1708,8 @@ html.winter [data-act="skip"] svg,html.winter [data-act="gwskip"] svg{color:#244
 .doll:has(>.dollframe){padding:20px 16px 22px}
 .dollframe.fr-neon{box-shadow:inset 0 0 18px #ff4fd866}.dollframe.fr-arany{box-shadow:inset 0 0 16px #f2b44255}.dollframe.fr-fagy{box-shadow:inset 0 0 16px #8fdcff66}.dollframe.fr-tuz{box-shadow:inset 0 0 22px #ff5a0066}.dollframe.fr-kiraly{box-shadow:inset 0 0 20px #9b4dff66}
 .fr-lim{position:absolute;top:4px;right:4px;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:linear-gradient(135deg,#7fd4ff,#2f6fb3);color:#fff;border-radius:6px;padding:2px 5px;box-shadow:0 0 8px #8fdcff88}.fr-off{font-size:11px;color:var(--muted);min-height:32px;display:flex;align-items:center}.deep-scene{background:linear-gradient(180deg,rgba(6,8,16,.2),rgba(6,8,16,.85)),radial-gradient(120% 80% at 50% 100%,#2a0f3a 0%,#0b0d18 70%)}
+.kar-cols,.kc{display:contents}
+@media (min-width:1200px){main.wrap:has(>.kar-cols){column-count:1!important;max-width:none!important}main.wrap>.kar-cols{column-span:all;-webkit-column-span:all;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}.kar-cols>.kc{display:flex;flex-direction:column;gap:16px;min-width:0}.kar-cols>.kc>*{margin:0!important}}
 main.wrap>.deep-grid{column-span:all;-webkit-column-span:all;display:grid;gap:14px;align-items:start}.deep-col{display:flex;flex-direction:column;gap:14px;min-width:0}.deep-col>*{margin:0!important;break-inside:avoid}.lad-gap{text-align:center;color:var(--muted,#8a93a8);letter-spacing:3px;line-height:1}
 .deep-board .lad-lvl{margin-left:6px}
 @media (min-width:1000px){.deep-grid{grid-template-columns:minmax(0,600px) minmax(0,440px);justify-content:center}}
@@ -4041,19 +4043,19 @@ function renderKarakter(){
       <div>${ic('shield','ic-armor')}<b>${Math.round(armorRed(f)*100)}%</b><span>Páncél</span></div>
       <div>${ic('target','ic-crit')}<b>${Math.round(critChance(f)*100)}%</b><span>Krit</span></div>
     </div></section>`;
-  html+=homeCard(); html+=petCard(); html+=frameCard();
-  html+=skillsCard();
-  html+=`<section class="card"><div class="row between" style="margin-bottom:4px"><span class="label">${ic('str')}Tulajdonságok</span><span class="note">Edzés forintért</span></div>`;
+  const colA=html+homeCard()+petCard(), frames=frameCard(), skills=skillsCard();
+  html=`<section class="card"><div class="row between" style="margin-bottom:4px"><span class="label">${ic('str')}Tulajdonságok</span><span class="note">Edzés forintért</span></div>`;
   for(const [k,n,d] of STATS){
     const cost=statCost(state.bought[k]), bonus=s[k]-state.stats[k];
     html+=`<div class="stat ${c.main===k?'main':''}"><div class="stat-ic">${ic(k,'ic-'+k)}</div>${(k===c.main||k==='con'||k==='lck')?`<div class="nm"><b>${n}</b>${statEffects(k)}</div>`:`<div class="nm stat-more" data-tip="stat:${k}"><b>${n}</b></div>`}
       <div class="v">${s[k]}${bonus?`<small>+${bonus}</small>`:''}</div>
       <button class="btn small ${c.main===k?'primary':''}" data-act="train" data-s="${k}" ${state.gold<cost?'disabled':''}>+1 · ${cost} Ft</button></div>`;
   }
-  html+=`</section>`+bagCard();
+  html+=`</section>`; const colB=html+skills;
+  html=bagCard()+frames;
   html+=(typeof inviteCard==='function'?inviteCard():'');
   html+=`<section class="card row between"><div><div class="label">${ic('user')}Hőseid</div><div class="note">A mostani hősöd mentve marad, bármikor visszaléphetsz.</div></div><button class="btn small primary" data-act="switchchar">Karakterváltás</button></section>`;
-  return html;
+  return `<div class="kar-cols"><div class="kc">${colA}</div><div class="kc">${colB}</div><div class="kc">${html}</div></div>`;
 }
 /* backpack: a grid of tiles, tap one for the details and the actions */
 const BAG={sel:null,f:'all'}, BAG_F={all:null,fegyver:['fegyver'],ruha:['fej','test','kesztyu','cipo','ov'],ekszer:['nyaklanc','gyuru','kabala']};
@@ -5556,7 +5558,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 23:27';
+const BUILD='2026.11.23 23:33';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
