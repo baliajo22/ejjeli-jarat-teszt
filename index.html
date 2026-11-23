@@ -36,11 +36,6 @@
 .port.fr.lad-port.fr-villamos::after,.port.fr.cmsg-p.fr-villamos::after,.gw-sg .port.fr.fr-villamos::after{width:133.9%;height:135.3%;left:-17.3%;top:-18.1%}
 .port.fr.doll-port.fr-villamos::after{width:108.6%;height:109.7%;left:-4.6%;top:-5.2%}.fr-cell .port.fr.fr-villamos::after{width:130.3%;height:131.7%;left:-15.5%;top:-16.2%}
 @keyframes frGlowvillamos{50%{filter:brightness(1.18) saturate(1.1)}}
-.dollframe.fr.fr-img.fr-trikolor{border:34px solid transparent;border-image:url(keret/trikolor.webp) 17% round;border-radius:0;box-shadow:none;animation:frGlowtrikolor 2.4s ease-in-out infinite}.dollframe.fr.fr-img.fr-trikolor::after{display:none}
-.port.fr.fr-trikolor::after{background:url(keret/trikolor.webp) center/100% 100% no-repeat;width:127.4%;height:126.3%;left:-13.6%;top:-12.7%;animation:frGlowtrikolor 2.4s ease-in-out infinite}
-.port.fr.lad-port.fr-trikolor::after,.port.fr.cmsg-p.fr-trikolor::after,.gw-sg .port.fr.fr-trikolor::after{width:112.3%;height:111.3%;left:-6.1%;top:-5.3%}
-.port.fr.doll-port.fr-trikolor::after{width:91.0%;height:90.2%;left:4.5%;top:5.2%}.fr-cell .port.fr.fr-trikolor::after{width:109.2%;height:108.3%;left:-4.6%;top:-3.8%}
-@keyframes frGlowtrikolor{50%{filter:brightness(1.18) saturate(1.1)}}
 .dollframe.fr.fr-img.fr-panel{border:34px solid transparent;border-image:url(keret/panel.webp) 16.7% round;border-radius:0;box-shadow:none;animation:frGlowpanel 2.4s ease-in-out infinite}.dollframe.fr.fr-img.fr-panel::after{display:none}
 .port.fr.fr-panel::after{background:url(keret/panel.webp) center/100% 100% no-repeat;width:127.6%;height:128.4%;left:-13.8%;top:-14.9%;animation:frGlowpanel 2.4s ease-in-out infinite}
 .port.fr.lad-port.fr-panel::after,.port.fr.cmsg-p.fr-panel::after,.gw-sg .port.fr.fr-panel::after{width:112.4%;height:113.1%;left:-6.2%;top:-7.2%}
@@ -3352,13 +3347,12 @@ function homeAct(act,el){ const h=homeEnsure();
 /* ================= portrékeret: pogácsáért, mindenki látja ================= */
 const FRAMES=[
   {k:'panel',n:'Panelszürke',p:10,d:'A tízemeletes klasszikus.'},
-  {k:'trikolor',n:'Piros-fehér-zöld',p:15,d:'Hazafias keret.'},
   {k:'villamos',n:'Villamossárga',p:20,d:'Mint a 4-6-os.'},
-  {k:'neon',n:'Romkocsma-neon',p:25,d:'Lüktető rózsaszín fény.',anim:1},
-  {k:'arany',n:'Aranypogácsa',p:35,d:'Csillogó arany.',anim:1},
-  {k:'fagy',n:'Téli fagy',p:35,d:'Jeges kék dér.',anim:1},
-  {k:'tuz',n:'Éjféli tűz',p:50,d:'Körbeforgó lángok.',anim:1},
-  {k:'kiraly',n:'Az Éjszaka Királya',p:70,d:'Fekete obszidián, arany és lila drágakövek.',anim:1}];
+  {k:'arany',n:'Aranypogácsa',p:40,d:'Csillogó arany.',anim:1},
+  {k:'neon',n:'Romkocsma-neon',p:50,d:'Lüktető rózsaszín fény.',anim:1},
+  {k:'fagy',n:'Téli fagy',p:60,d:'Jeges kék dér.',anim:1},
+  {k:'tuz',n:'Éjféli tűz',p:80,d:'Körbeforgó lángok.',anim:1},
+  {k:'kiraly',n:'Az Éjszaka Királya',p:100,d:'Fekete obszidián, arany és lila drágakövek.',anim:1}];
 const FRAME_BY=Object.fromEntries(FRAMES.map(f=>[f.k,f]));
 function frameKeyOf(x){ if(!x) return ''; let f;
   if(typeof x==='object') f=x.frame;
@@ -3366,7 +3360,7 @@ function frameKeyOf(x){ if(!x) return ''; let f;
   return FRAME_BY[f]?f:''; }
 let DOLL_IMG=["neon", "tuz", "kiraly", "fagy", "arany", "panel", "villamos"];
 const dollFrame=x=>{ const f=frameKeyOf(x); return f?`<div class="dollframe fr fr-${f}${(typeof FRAME_IMG!=='undefined'&&FRAME_IMG.includes(f))?' fr-img':''}${DOLL_IMG.includes(f)?' fr-dimg':''}" aria-hidden="true"></div>`:''; };
-const FRAME_IMG=["arany", "arany_doll", "fagy", "fagy_doll", "kiraly", "kiraly_doll", "neon", "neon_doll", "panel", "panel_doll", "trikolor", "tuz", "tuz_doll", "villamos", "villamos_doll"];
+const FRAME_IMG=["arany", "arany_doll", "fagy", "fagy_doll", "kiraly", "kiraly_doll", "neon", "neon_doll", "panel", "panel_doll", "tuz", "tuz_doll", "villamos", "villamos_doll"];
 const frc=(x,base='')=>{ const f=frameKeyOf(x); return (base+(f?' fr fr-'+f+(FRAME_IMG.includes(f)?' fr-img':''):'')).trim(); };
 function frameCard(){ if(!state) return ''; const own=new Set(state.frames||[]), cur=state.frame||'', art=artOf(state.cls,sexLook(state));
   const cell=(f)=>{ const has=!f||own.has(f.k), on=(f?f.k:'')===cur;
@@ -5481,7 +5475,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 21:35';
+const BUILD='2026.11.23 21:47';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
