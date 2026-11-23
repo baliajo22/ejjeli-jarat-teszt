@@ -6227,6 +6227,10 @@ window.EJ_TEST=true;
   if(state&&!(typeof ONLINE!=='undefined'&&ONLINE.user)&&(view==='karakter'||view==='lakas')){ const b=document.createElement('button'); b.id='ej-test-cash'; b.textContent='🧪 +100 000 Ft · +50 pogácsa';
     b.style.cssText='position:fixed;right:8px;bottom:96px;z-index:100000;background:#ffd400;color:#111;border:0;border-radius:10px;padding:8px 12px;font:800 13px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.5)';
     b.onclick=()=>{ state.gold+=100000; state.pog=(state.pog||0)+50; save(); render(); toast('Teszt: +100 000 Ft, +50 pogácsa'); }; document.body.appendChild(b); }
+  const old2=document.getElementById('ej-test-lvl'); if(old2) old2.remove();
+  if(state&&!(typeof ONLINE!=='undefined'&&ONLINE.user)&&view==='karakter'&&state.level<100){ const b=document.createElement('button'); b.id='ej-test-lvl'; b.textContent='🧪 100. szint + felszerelés';
+    b.style.cssText='position:fixed;right:8px;bottom:140px;z-index:100000;background:#b04bff;color:#fff;border:0;border-radius:10px;padding:8px 12px;font:800 13px system-ui;box-shadow:0 4px 14px rgba(0,0,0,.5)';
+    b.onclick=()=>{ state.level=100; state.xp=0; for(const sl of SLOTS){ state.equip[sl[0]]=genItem(100,sl[0],state.cls,3); } const c=CLASSES[state.cls]; state.stats[c.main]=Math.max(state.stats[c.main],900); state.stats.con=Math.max(state.stats.con,500); state.dungeonReadyAt=0; save(); render(); toast('Teszt: 100. szint, epikus felszerelés. A Kazamata fülön vár A Mélység.'); }; document.body.appendChild(b); }
   }catch(e){} return r; }; })();
 </script></body>
 </html>
