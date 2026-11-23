@@ -56,6 +56,12 @@
 .port.fr.lad-port.fr-kiraly::after,.port.fr.cmsg-p.fr-kiraly::after,.gw-sg .port.fr.fr-kiraly::after{width:97.4%;height:98.0%;left:1.3%;top:1.0%}
 .port.fr.doll-port.fr-kiraly::after{width:79.0%;height:79.5%;left:10.5%;top:10.3%}.fr-cell .port.fr.fr-kiraly::after{width:94.8%;height:95.4%;left:2.6%;top:2.4%}
 @keyframes frGlowkiraly{50%{filter:brightness(1.18) saturate(1.1)}}
+.dollframe.fr.fr-img.fr-neon_doll{border:34px solid transparent;border-image:url(keret/neon_doll.webp) 9.0% stretch;border-radius:0;box-shadow:none;animation:frGlowneon_doll 2.4s ease-in-out infinite}.dollframe.fr.fr-img.fr-neon_doll::after{display:none}
+.port.fr.fr-neon_doll::after{background:url(keret/neon_doll.webp) center/100% 100% no-repeat;width:103.0%;height:123.1%;left:-1.2%;top:-12.0%;animation:frGlowneon_doll 2.4s ease-in-out infinite}
+.port.fr.lad-port.fr-neon_doll::after,.port.fr.cmsg-p.fr-neon_doll::after,.gw-sg .port.fr.fr-neon_doll::after{width:90.8%;height:108.5%;left:4.9%;top:-4.7%}
+.port.fr.doll-port.fr-neon_doll::after{width:73.6%;height:87.9%;left:13.4%;top:5.7%}.fr-cell .port.fr.fr-neon_doll::after{width:88.3%;height:105.5%;left:6.1%;top:-3.2%}
+@keyframes frGlowneon_doll{50%{filter:brightness(1.18) saturate(1.1)}}
+.doll:has(>.dollframe.fr-dimg.fr-neon){container-type:inline-size;padding:calc(21.71% + 4px) calc(9.49% + 2px) calc(20.65% + 4px) calc(8.97% + 2px)}.dollframe.fr.fr-dimg.fr-neon{border-style:solid;border-color:transparent;border-width:21.71cqw 9.49cqw 20.65cqw 8.97cqw;border-image:url(keret/neon_doll.webp) 16.28% 9.49% 15.49% 8.97% stretch;border-radius:0;box-shadow:none;animation:frGlowneon 2.4s ease-in-out infinite}.dollframe.fr.fr-dimg.fr-neon::after{display:none}
 .fb-hero{display:flex;flex-direction:column;gap:6px;margin:10px 0 2px;font-size:13px;color:var(--muted)}.fb-hero select{font:inherit;font-size:15px;color:var(--text,#fff);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}.fb-mini{display:flex;justify-content:center;margin:14px 0 4px}.fb-mini-btn{font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 16px;cursor:pointer}.fb-mini-btn:hover{color:var(--text,#fff);border-color:var(--muted)}html.in-play .fb-mini{display:flex}</style>
 <style>@font-face{font-family:"Bangers";src:url("fonts/Bangers-Regular.ttf") format("truetype");font-display:swap}@font-face{font-family:"Rubik";src:url("fonts/Rubik.ttf") format("truetype");font-weight:300 900;font-display:swap}</style>
 <style>
@@ -3313,8 +3319,9 @@ function frameKeyOf(x){ if(!x) return ''; let f;
   if(typeof x==='object') f=x.frame;
   else { let id=String(x); if(id==='me') f=state&&state.frame; else { id=id.replace(/^[cp]-/,''); const d=(state&&id===state.cid)?state:(typeof realData==='function'?realData(id):null); f=d&&d.frame; } }
   return FRAME_BY[f]?f:''; }
-const dollFrame=x=>{ const f=frameKeyOf(x); return f?`<div class="dollframe fr fr-${f}${(typeof FRAME_IMG!=='undefined'&&FRAME_IMG.includes(f))?' fr-img':''}" aria-hidden="true"></div>`:''; };
-const FRAME_IMG=["arany", "fagy", "kiraly", "neon", "panel", "trikolor", "tuz", "villamos"];
+let DOLL_IMG=["neon"];
+const dollFrame=x=>{ const f=frameKeyOf(x); return f?`<div class="dollframe fr fr-${f}${(typeof FRAME_IMG!=='undefined'&&FRAME_IMG.includes(f))?' fr-img':''}${DOLL_IMG.includes(f)?' fr-dimg':''}" aria-hidden="true"></div>`:''; };
+const FRAME_IMG=["arany", "fagy", "kiraly", "neon", "neon_doll", "panel", "trikolor", "tuz", "villamos"];
 const frc=(x,base='')=>{ const f=frameKeyOf(x); return (base+(f?' fr fr-'+f+(FRAME_IMG.includes(f)?' fr-img':''):'')).trim(); };
 function frameCard(){ if(!state) return ''; const own=new Set(state.frames||[]), cur=state.frame||'', art=artOf(state.cls,sexLook(state));
   const cell=(f)=>{ const has=!f||own.has(f.k), on=(f?f.k:'')===cur;
@@ -5429,7 +5436,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 20:07';
+const BUILD='2026.11.23 20:27';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
