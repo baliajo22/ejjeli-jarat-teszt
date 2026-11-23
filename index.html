@@ -2203,7 +2203,7 @@ const QBG={"Liftakna-sárkány": "UklGRg54AABXRUJQVlA4IAJ4AACQXQKdASrQAtwBPpFEnU
 function questScene(title){ if(QBG[title]) return `<img class="bgpic qscene" src="data:image/webp;base64,${QBG[title]}" alt="" decoding="async">`; const f=SCN[title]||SCN['Villamosdémon']; return svg(`<g stroke="none">${f()}</g>`,'0 0 360 200','preserveAspectRatio="xMidYMid slice"'); }
 /* harc háttere: küldetésnél a helyszín, máskor a hely jellegű kép */
 let BATTLE_BG=null;
-function battleScene(k){ if(k&&k.startsWith('q:')) return questScene(k.slice(2)); if(k==='kazamata') return bgPic('kazamata'); if(k==='ceh') return bgPic('ceh'); if(k==='varos') return bgPic('skyline'); return bgPic('arena'); }
+function battleScene(k){ if(k&&k.startsWith('q:')) return questScene(k.slice(2)); if(k==='kazamata') return bgPic('kazamata'); if(k==='mely') return bgPic(BG_IMG.mely?'mely':'kazamata'); if(k==='ceh') return bgPic('ceh'); if(k==='varos') return bgPic('skyline'); return bgPic('arena'); }
 function arenaFightSvg(){ const r=seeded(71); let crowd=''; for(let row=0;row<4;row++) for(let x=-6;x<370;x+=11+row){ const y=54+row*16+r()*3; crowd+=`<circle cx="${x+r()*4}" cy="${y}" r="${4.2+row*.5}" fill="${['#0d0e18','#141526','#1a1b30','#202238'][row]}"/><rect x="${x-6}" y="${y+4}" width="12" height="10" rx="4" fill="${['#0d0e18','#141526','#1a1b30','#202238'][row]}"/>`; }
   let flashes=''; for(let i=0;i<9;i++) flashes+=`<circle cx="${r()*360}" cy="${50+r()*60}" r="1.6" fill="#fff" opacity="${.5+r()*.5}"/>`;
   return svg(`<g stroke="none">${scnSky('#0b0c16','#1a1530')}
@@ -2221,7 +2221,7 @@ function arenaPageBg(){ const r=seeded(83); let rows=''; for(let row=0;row<9;row
    <path d="M40 24v60M320 24v60" stroke="#24263a" stroke-width="4"/>
    ${rows}${fl}<rect y="400" width="360" height="240" fill="#100e1c"/>${scnGlow(180,470,200,'#f2a33a',.12)}<ellipse cx="180" cy="470" rx="200" ry="50" fill="none" stroke="#f2a33a" stroke-width="2" stroke-dasharray="10 9" opacity=".35"/></g>`,'0 0 360 640','preserveAspectRatio="xMidYMin slice"'); }
 const VIEW_BG={arena:()=>bgPic('arena','page')};
-function viewBgKey(){ if(!state) return ''; if(view==='bolt') return boltTab==='garazs'?'garazs':boltTab==='muhely'?'muhely':'bolt'; return {arena:'arena',kocsma:'kocsma',kazamata:'kazamata',ceh:'ceh',karakter:'room',terkep:'skyline',rang:'skyline'}[view]||''; }
+function viewBgKey(){ if(!state) return ''; if(view==='bolt') return boltTab==='garazs'?'garazs':boltTab==='muhely'?'muhely':'bolt'; return {arena:'arena',kocsma:'kocsma',kazamata:(kazTab==='deep'&&BG_IMG.mely)?'mely':'kazamata',ceh:'ceh',karakter:'room',terkep:'skyline',rang:'skyline'}[view]||''; }
 function syncViewBg(){ let el=$('#viewbg'); if(!el){ el=document.createElement('div'); el.id='viewbg'; el.setAttribute('aria-hidden','true'); document.body.prepend(el); }
   const k=viewBgKey(); if(el.dataset.k===k) return; el.dataset.k=k;
   if(k){ el.innerHTML=bgPic(k,'page'); requestAnimationFrame(()=>el.classList.add('on')); } else { el.classList.remove('on'); } }
@@ -3523,16 +3523,18 @@ function applyWinter(){ const on=winterOn(), h=document.documentElement; if(h.cl
 /* ================= A Mélység: végtelen kazamata 100. szinttől ================= */
 const DEEP_LVL=100;
 const DEEP_A=['Feneketlen','Néma','Rozsdás','Elfeledett','Fénytelen','Fortyogó','Visszhangzó','Csontszáraz','Mélyföldi','Vak','Kőszívű','Árnyékos','Penészes','Jéghideg','Füstös','Szuroksötét'];
-const DEEP_B=['csatornakígyó','kábelféreg','alagútgólem','vízköpő','pincelidérc','csontkalauz','sínfaló','kőtroll','iszapszellem','kriptaőr','gőzdémon','vakondlovag','gyökérbanya','betonóriás','rozsdaszörny','mélységi pók'];
-const DEEP_BOSS=['A Mélység Kapusa','A Fenék Királya','Az Örök Sötétség','A Feledés Őre','A Föld Szíve','Az Utolsó Megálló','A Néma Mozdonyvezető','A Mélység Anyja'];
+const DEEP_B=['csatornakígyó','kábelféreg','téglagólem','vízköpő','pincelidérc','csontkalauz','sínfaló','mohatroll','kátrányszellem','kriptaőr','gőzdémon','vakondlovag','gyökérbanya','betonóriás','rozsdaszörny','mélységi pók','vakhal-bányász','fogas csille'];
+const DEEP_BOSS=['A Mélység Kapusa','A Fenék Királya','Az Örök Sötétség','A Feledés Őre','A Föld Szíve','Az Utolsó Megálló','A Néma Mozdonyvezető','A Feneketlen Féreg'];
+DEEP_B.forEach((_,i)=>ENEMY_ART['deep_'+i]=`<image href="mely/d${i}.webp" x="1" y="2" width="62" height="62" preserveAspectRatio="xMidYMid meet"/>`);
+DEEP_BOSS.forEach((_,i)=>ENEMY_ART['deepb_'+i]=`<image href="mely/b${i}.webp" x="1" y="2" width="62" height="62" preserveAspectRatio="xMidYMid meet"/>`);
 const DEEP_TITLES=[[25,'Mélységjáró'],[50,'A Sötét Bányász'],[100,'A Mélység Ura'],[200,'Akinek nincs feneke']];
 function deepSt(){ return state.deep=state.deep||{f:1,best:0}; }
 function deepRnd(n){ const v=Math.sin(n*12.9898)*43758.5453; return v-Math.floor(v); }
 function deepFoe(f){ const boss=f%10===0, ej=DUNGEONS.find(d=>d.id===FINAL_ID), b0=dungeonFoe(ej,4);   // 1. emelet ≈ az Éjfél Szíve 5. emelete
   const lvl=b0.level+Math.floor((f-1)*.4), mult=b0.mult*(1+(f-1)*.006)*(boss?1.08:1);
-  const arts=Object.keys(ENEMY_ART).filter(k=>!k.startsWith('boss_')), bossArts=Object.keys(ENEMY_ART).filter(k=>k.startsWith('boss_'));
-  const name=boss?DEEP_BOSS[Math.floor(f/10-1)%DEEP_BOSS.length]:`${DEEP_A[Math.floor(deepRnd(f)*DEEP_A.length)]} ${DEEP_B[Math.floor(deepRnd(f+.5)*DEEP_B.length)]}`;
-  const art=boss?bossArts[Math.floor(deepRnd(f+.25)*bossArts.length)]:arts[Math.floor(deepRnd(f+.75)*arts.length)];
+  const bi=Math.floor(f/10-1)%DEEP_BOSS.length, mi=Math.floor(deepRnd(f+.5)*DEEP_B.length);
+  const name=boss?DEEP_BOSS[bi]:`${DEEP_A[Math.floor(deepRnd(f)*DEEP_A.length)]} ${DEEP_B[mi]}`;
+  const art=boss?'deepb_'+bi:'deep_'+mi;
   return {name, art, level:lvl, boss, hp:1, cls:Object.keys(CLASSES)[Math.floor(deepRnd(f+.33)*Object.keys(CLASSES).length)], mult,
     gold:Math.round((20+lvl*14)*(boss?3:1)*DUNG_PAY*goldMult()), xp:Math.round((40+lvl*22)*(boss?2:1)*DUNG_PAY*xpMult())}; }
 function deepBoard(){ const L=(typeof realPlayers==='function'?realPlayers():[]).map(x=>{ const d=x.me?state:(typeof realData==='function'&&x.key?realData(String(x.key).replace(/^[cp]-/,'')):null); return {...x,best:(d&&d.deep&&d.deep.best)||0}; }).filter(x=>x.best>0||x.me);
@@ -3565,7 +3567,7 @@ function doDeep(pay){
     rw+=`<span class="chip">${ic('down')}Nyitva: ${f+1}. emelet</span>`;
     gainXp(xp);
   } else rw=`<span class="note">${esc(x.name)} még túl erős. Erősödj meg, és pihenő után próbáld újra.</span>`;
-  state.dungeonReadyAt=now()+DUNGEON_CD; save(); BATTLE_BG='kazamata';
+  state.dungeonReadyAt=now()+DUNGEON_CD; save(); BATTLE_BG='mely';
   openBattle(me,foe,res,rw); }
 
 function render(){
@@ -5533,7 +5535,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.23 22:21';
+const BUILD='2026.11.23 22:37';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
