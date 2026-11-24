@@ -4890,6 +4890,7 @@ function openBattle(a,b,res,rewardsHtml){
 }
 async function stepBattle(){
   const B=battle; if(!B||B.ended) return;
+  if(!document.querySelector('#fa')||!document.querySelector('#fb')){ clearTimeout(B.timer); battle=null; return; }   // a harcablakot közben bezárták
   if(B.i>=B.res.log.length){ B.guild?gwDuelEnd():endBattle(); return; }
   const e=B.res.log[B.i++], k=B.k;
   // long guild duels: animate the opening blows, then let the rest run quickly
@@ -5602,7 +5603,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.24 18:21';
+const BUILD='2026.11.24 18:42';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
