@@ -3986,10 +3986,10 @@ let LOGIN_SHOWN=null;
 /* ================= Újdonságok: belépéskor felugró frissítési napló ================= */
 // A legfrissebb bejegyzés legyen elöl. Új frissítésnél új id kell: akkor azoknak is újra feljön, akik kipipálták.
 const NEWS=[
-  {id:'2026-11-24',d:HT('november 24.','24 November'),items:[
+  {id:'2026-11-24-dc',d:HT('november 24.','24 November'),items:[
+    ['💬',HT('Discord-szerver','Discord server'),HT('Megnyílt a játék közössége! Kérdezz, dicsekedj, keress céhet, és elsőként értesülj az újdonságokról: <a href="https://discord.gg/eXSkSgrbpg" target="_blank" rel="noopener">discord.gg/eXSkSgrbpg</a> (a Kocsma alján is ott a gomb).','The game\'s community is open! Ask questions, show off, find a guild and hear about updates first: <a href="https://discord.gg/eXSkSgrbpg" target="_blank" rel="noopener">discord.gg/eXSkSgrbpg</a> (there\'s a button at the bottom of the Tavern too).')],
     ['🕳️',HT('Új: A Mélység','New: The Abyss'),HT('Végtelen kazamata az 50. szinttől (Kazamata fül → A Mélység). Minden emelet egy szinttel erősebb, minden tizediken főgonosz vár pogácsával és különleges tárggyal. Új szörnyek, címek és saját ranglista: ki jut le a legmélyebbre?','An endless dungeon from level 50 (Dungeon tab → The Abyss). Every floor is one level stronger, and every tenth has a boss with a scone and a special item. New monsters, titles and its own ranking: who gets the deepest?')],
     ['🖼️',HT('Portrékeretek','Portrait frames'),HT('Festett keretek pogácsáért a Karakter fülön, Panelszürkétől Az Éjszaka Királyáig. Mindenki látja: a ranglétrán, az arénában, harcban és a postában is. A Téli fagy limitált, csak december 1. és január 6. között vehető meg.','Painted frames for scones on the Character tab, from Panel Grey to King of the Night. Everyone sees it: on the ranking, in the arena, in fights and in the mail. Winter Frost is limited, only buyable between 1 December and 6 January.')],
-    ['💬',HT('Discord-szerver','Discord server'),HT('Megnyílt a játék közössége! Kérdezz, dicsekedj, keress céhet, és elsőként értesülj az újdonságokról: <a href="https://discord.gg/eXSkSgrbpg" target="_blank" rel="noopener">discord.gg/eXSkSgrbpg</a> (a Kocsma alján is ott a gomb).','The game\'s community is open! Ask questions, show off, find a guild and hear about updates first: <a href="https://discord.gg/eXSkSgrbpg" target="_blank" rel="noopener">discord.gg/eXSkSgrbpg</a> (there\'s a button at the bottom of the Tavern too).')],
     ['🛍️',HT('Black Friday Icánál','Black Friday at Ica\'s'),HT('A pogácsacsomagok 20–30% kedvezménnyel kaphatók november 29-ig.','Scone packs are 20–30% off until 29 November.')]]}
 ];
 const NEWS_KEY='ej-news-hide';
@@ -5610,7 +5610,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.24 19:45';
+const BUILD='2026.11.24 19:50';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
