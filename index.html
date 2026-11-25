@@ -3514,7 +3514,7 @@ function advRewards(d){ const R=ADV[d-1], L=state.level||1, out=[];
   return out; }
 function advCard(){ if(!state||!advShow()) return ''; const t=advToday(), o=advOpened();
   if(!t) return `<section class="card adv-card soon"><div class="adv-garland" aria-hidden="true"><svg viewBox="0 0 360 34" preserveAspectRatio="none"><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#1f5a34" stroke-width="9" stroke-linecap="round"/><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#2f7d49" stroke-width="4" stroke-dasharray="2 5" stroke-linecap="round"/></svg>${[[6,9],[16,19],[27,15],[38,8],[50,8],[61,14],[72,19],[83,13],[94,8]].map(([x,y],i)=>`<i class="adv-bulb b${i%4}" style="left:${x}%;top:${y}px;animation-delay:${(i%3)*.5}s"></i>`).join('')}</div><div class="adv-snow"></div><span class="label">🎄 Adventi naptár</span><h3 class="adv-h">December 1-jén nyílik az első ablak</h3><p class="note" style="margin:0">24 nap, 24 meglepetés. Minden nap egy új ablak, Szentestén pedig a legnagyobb ajándék.</p></section>`;
-  const advImg=(d,st)=>st==='today'?'today':st==='open'?'open':st==='late'?'frozen':'w'+((d-1)%4);
+  const advImg=(d,st)=>{ const v=(d-1)%4, sfx=v?String(v):''; return st==='today'?'today'+sfx:st==='open'?'open'+sfx:st==='late'?'frozen':'w'+v; };   // a nyitott és a mai doboz is a saját csomagolása színében
   const cell=d=>{ const st=advState(d); return `<button class="adv-w pic ${st} ${d===24?'big':''} ${d===6?'mik':''}" style="--img:url(advent/${advImg(d,st)}.webp)" data-act="advopen" data-d="${d}" ${st==='lock'||st==='open'?'disabled':''} aria-label="${d}. ablak">
       <i class="adv-bow"></i><span class="adv-d">${d}</span>${st==='open'?'<span class="adv-ok">✓</span>':st==='late'?`<span class="adv-late">${pogIc()}${ADV_LATE}</span>`:st==='today'?'<span class="adv-now">Nyisd ki!</span>':''}</button>`; };
   const todayOpen=o.includes(t);
@@ -5612,7 +5612,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.25 15:34';
+const BUILD='2026.11.25 15:39';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
