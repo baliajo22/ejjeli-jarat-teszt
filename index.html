@@ -3499,7 +3499,7 @@ const ADV=[
   {r:'pog',n:3,t:'Holnap Szenteste. Ica már most ünnepi hangulatban van.'},
   {r:'karacsony',t:'Boldog karácsonyt! Az egész város gondolt rád.'}];
 function advToday(){ if(typeof window!=='undefined'&&window.EJ_TEST) return 5; const b=budNow().b; return (b.getFullYear()===ADV_Y&&b.getMonth()===11)?b.getDate():0; }
-function advShow(){ if(typeof window!=='undefined'&&window.EJ_TEST) return true; const b=budNow().b; return b.getFullYear()===ADV_Y&&((b.getMonth()===10&&b.getDate()>=27)||(b.getMonth()===11&&b.getDate()<=26)); }
+function advShow(){ if(typeof window!=='undefined'&&window.EJ_TEST) return true; const b=budNow().b; return b.getFullYear()===ADV_Y&&(b.getMonth()===11&&b.getDate()<=26); }
 function advOpened(){ const A=state.adv=(state.adv&&state.adv.y===ADV_Y)?state.adv:{y:ADV_Y,o:[]}; return A.o; }
 function advState(d){ const t=advToday(), o=advOpened(); if(o.includes(d)) return 'open'; if(!t||d>t||d>24) return 'lock'; return d===t?'today':'late'; }
 function advRewards(d){ const R=ADV[d-1], L=state.level||1, out=[];
@@ -5614,7 +5614,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.25 15:45';
+const BUILD='2026.11.25 15:51';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
