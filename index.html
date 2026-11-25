@@ -1718,7 +1718,7 @@ html.winter [data-act="skip"] svg,html.winter [data-act="gwskip"] svg{color:#244
 .fr-zoom{position:absolute;top:5px;left:5px;z-index:3;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:#0d1020cc;color:var(--text,#fff);cursor:pointer;padding:0}.fr-zoom:hover{border-color:var(--sodium);color:var(--sodium)}.fr-zoom svg{width:15px;height:15px}
 .frprev-card{width:min(520px,100%)}.frprev-doll{pointer-events:none}.frprev-doll .doll{width:100%!important;margin-inline:0!important}.frprev-small .lad-row{grid-template-columns:50px 1fr auto;gap:14px;padding:12px 14px;pointer-events:none}.frprev-small .lad-lvl{margin-left:6px}.frprev-small .lad-row b{font-size:12px;color:var(--muted)}
 @media (max-width:640px){.mg-bar .mg-chip{min-width:0;padding:0 6px;gap:4px;font-size:13px}.mg-bar .mg-chip .mg-ic svg{width:15px;height:15px}}
-.deep-tease{position:relative;display:grid;grid-template-columns:76px 1fr;grid-template-areas:'a t' 'a b';gap:6px 14px;align-items:center;padding:16px;border-radius:14px;cursor:pointer;overflow:hidden;border:1px solid #8d5bd6aa;background:linear-gradient(90deg,rgba(8,6,18,.92) 0%,rgba(8,6,18,.72) 55%,rgba(8,6,18,.35) 100%),var(--dbg) center/cover;box-shadow:0 0 0 1px #00000055,0 10px 28px -12px #8d5bd6cc;transition:transform .15s,box-shadow .2s}.deep-tease:hover{transform:translateY(-1px);box-shadow:0 0 0 1px #b48cff88,0 12px 32px -10px #8d5bd6}.deep-tease .dt-art{grid-area:a}.deep-tease .dt-art .port{width:76px;height:76px;filter:drop-shadow(0 0 12px #b48cff88)}.deep-tease .dt-txt{grid-area:t;min-width:0}.deep-tease h3{margin:2px 0 4px;font-size:20px;color:#efe6ff;text-shadow:0 0 14px #8d5bd6}.deep-tease p{margin:0;font-size:14px;color:#cfc6e6;line-height:1.35}.deep-tease .label{color:#c9b3ff}.deep-tease .dt-btn{grid-area:b;justify-self:start;pointer-events:none}.deep-tease.locked{border-color:#ffffff22;box-shadow:none}.deep-tease.locked .dt-art{filter:grayscale(.6) brightness(.7)}.mg-new{margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.05em;padding:1px 6px;border-radius:6px;background:#8d5bd6;color:#fff}
+.kaz-bar{flex-wrap:wrap;row-gap:8px}.kaz-bar .mg-chip[data-t=deep]{flex:1 1 100%;justify-content:center;border-color:#8d5bd6aa;background:linear-gradient(90deg,#1b1030,#2a1650 50%,#1b1030);box-shadow:0 0 18px -8px #8d5bd6;color:#efe6ff!important}.kaz-bar .mg-chip[data-t=deep] svg{color:#c9b3ff!important}.kaz-bar .mg-chip[data-t=deep].on{border-color:#b48cff;box-shadow:0 0 0 1px #b48cff66,0 0 22px -6px #8d5bd6}
 main.wrap>.deep-grid{column-span:all;-webkit-column-span:all;display:grid;gap:14px;align-items:start}.deep-col{display:flex;flex-direction:column;gap:14px;min-width:0}.deep-col>*{margin:0!important;break-inside:avoid}.lad-gap{text-align:center;color:var(--muted,#8a93a8);letter-spacing:3px;line-height:1}
 .deep-board .lad-lvl{margin-left:6px}
 @media (min-width:1000px){.deep-grid{grid-template-columns:minmax(0,600px) minmax(0,440px);justify-content:center}}
@@ -3586,15 +3586,6 @@ function deepBoardHtml(){
   const B=deepBoard();
   return `</div><div class="deep-col"><section class="card deep-board"><span class="label">${ic('trophy')}Legmélyebbre jutottak</span><p class="note" style="margin:4px 0 0">Ki hányadik emeletig jutott le a Mélységben.</p><div class="ladder" style="margin-top:8px">${B.map((r,i)=>`${i&&r.rank-B[i-1].rank>1?'<div class="lad-gap">···</div>':''}<div class="lad-row ${r.me?'me':''}" ${r.key&&!r.me?`role="button" tabindex="0" data-act="inspect" data-id="${r.key}"`:''}><span class="lad-rank r${r.rank<=3?r.rank:0}">${r.rank}</span>${portrait(artOf(r.cls,r.sex||'m',r.name),'lad-port')}<span class="lad-name">${esc(r.name)}<span class="lad-lvl mono">${r.level}. szint</span></span><b class="mono">${r.best?r.best+'. em.':'–'}</b></div>`).join('')}</div></section></div></div>`;
 }
-function deepTeaser(){ if(!state||state.level<30) return '';
-  const open=state.level>=DEEP_LVL, D=deepSt(), x=deepFoe(D.f), left=Math.max(0,(state.dungeonReadyAt||0)-now());
-  const bg=BG_IMG.mely?`url(data:image/webp;base64,${BG_IMG.mely})`:'none';
-  return `<section class="deep-tease ${open?'':'locked'}" style="--dbg:${bg}" role="button" tabindex="0" data-act="godeep">
-    <div class="dt-art">${portrait(ENEMY_ART[open?x.art:'deepb_0'],'deep-port')}</div>
-    <div class="dt-txt"><span class="label">${ic('down')}${open?(D.best?`Legmélyebb: ${D.best}. emelet`:'Új kaland'):`${DEEP_LVL}. szinttől`}</span>
-      <h3>A Mélység</h3>
-      <p>${open?(x.boss?HT(`A ${D.f}. emeleten főgonosz vár: `,`A boss awaits on floor ${D.f}: `):HT(`Következik a ${D.f}. emelet: `,`Next up, floor ${D.f}: `))+`<b>${esc(x.name)}</b>.`:`A város alatt is van lejjebb. Végtelen emelet, főgonoszok, pogácsa és címek. Még ${DEEP_LVL-state.level} szint.`}</p></div>
-    <span class="btn ${open&&!left&&!state.active?'primary':''} dt-btn">${open?(left?`${ic('clock')}${fmtTime(left)}`:`${ic('down')}Lemerülök`):`${ic('lock')}Megnézem`}</span></section>`; }
 function renderDeep(){
   let html=`${kazBar()}<div class="deep-grid"><div class="deep-col"><section class="scene deep-scene"><span class="label">${ic('down')}A város legalja</span><h2>A Mélység</h2><p>A város alatt is van még lejjebb. A Mélységnek nincs alja: minden emelet erősebb az előzőnél, minden tizediken egy főgonosz vár. Te meddig jutsz le?</p></section>`;
   if(state.level<DEEP_LVL) return html+`<section class="card lock-card">${ic('lock')}<div><h3>A ${DEEP_LVL}. szinten nyílik meg</h3><p class="muted">Még ${DEEP_LVL-state.level} szintet kell lépned. Akkor lemerülhetsz: végtelen emelet, minden tizediken főgonosz, különleges tárgyak, pogácsa és címek.</p></div></section>`+deepBoardHtml();
@@ -3698,7 +3689,7 @@ function renderHud(){
 function renderTabs(){
   const t=[['karakter','Karakter'],['kocsma','Kocsma'],['bolt','Bolt'],['rang','Ranglétra'],['arena','Aréna'],['kazamata','Kazamata'],['ceh','Céh']];
   const ready = state.active && state.active.endsAt<=now();
-  return `<nav class="tabs"><div class="in">${t.map(([k,l])=>`<button class="tab" data-act="view" data-v="${k}" ${view===k||(k==='karakter'&&view==='lakas')?'aria-current="page"':''}>${TAB_ICON[k]}${l}${(k==='kocsma'&&(ready||wheelFreeReady()||tasksClaimable())&&view!=='kocsma')||(k==='karakter'&&view!=='karakter'&&skillOpen()>=0)||(k==='ceh'&&view!=='ceh'&&state.level>=GUILD_UNLOCK&&(raidReady()||gwAttention()))||(k==='kazamata'&&view!=='kazamata'&&(bossReady()||(state.level>=DEEP_LVL&&!deepSt().best)))||(k==='bolt'&&state.freeReshop&&view!=='bolt')?'<span class="dot"></span>':''}${(k==='kazamata'&&state.level<DUNGEON_UNLOCK)||(k==='ceh'&&state.level<GUILD_UNLOCK)?`<span class="lock-mini">${ic('lock')}</span>`:''}</button>`).join('')}</div></nav>`;
+  return `<nav class="tabs"><div class="in">${t.map(([k,l])=>`<button class="tab" data-act="view" data-v="${k}" ${view===k||(k==='karakter'&&view==='lakas')?'aria-current="page"':''}>${TAB_ICON[k]}${l}${(k==='kocsma'&&(ready||wheelFreeReady()||tasksClaimable())&&view!=='kocsma')||(k==='karakter'&&view!=='karakter'&&skillOpen()>=0)||(k==='ceh'&&view!=='ceh'&&state.level>=GUILD_UNLOCK&&(raidReady()||gwAttention()))||(k==='kazamata'&&view!=='kazamata'&&bossReady())||(k==='bolt'&&state.freeReshop&&view!=='bolt')?'<span class="dot"></span>':''}${(k==='kazamata'&&state.level<DUNGEON_UNLOCK)||(k==='ceh'&&state.level<GUILD_UNLOCK)?`<span class="lock-mini">${ic('lock')}</span>`:''}</button>`).join('')}</div></nav>`;
 }
 function questCost(q){
   return `<span class="with-ic">${ic('clock','ic-time')}${fmtDur(effDur(q))}${mountRed()?` <s class="muted">${fmtDur(q.dur)}</s>`:''}</span><span class="with-ic">${ic('coffee','ic-coffee')}−${qCost(q)} kávé</span>`;
@@ -4065,7 +4056,6 @@ function renderKocsma(){
   if(state.quests&&state.quests.some(q=>q.tc||(!q.cf&&q.dur>60&&state.level<QUEST_CAP_LVL)||q.dur>600)){ state.quests=genQuests(); save(); }   // old 10-20 minute offers -> the new curve
   if(state.active) return renderJourney();
   let html=`${minigameBar()}${advCard()}${typeof bfCard==='function'?bfCard():''}${typeof seasonNotice==='function'?seasonNotice():''}${banner('kocsma')}<section class="scene"><span class="label">${ic('pin')}Romkocsma · VII. kerület · 23:47</span><h2>Ica a pult mögül int</h2><p>„Megint gyűlnek a bejelentések, drágám. Válassz egyet, de előtte igyál egy kávét.”</p></section>${typeof seasonNotice==='function'&&SB?'':evCard()}${vehicleCard()}`;
-  html+=deepTeaser();
   html+=`<section class="stack"><div class="row between"><span class="label">${ic('box')}Bejelentések</span><span class="note with-ic">${ic('coffee','ic-coffee')}Éjfélkor újratöltődik</span></div>`;
   if(selQuest&&!state.quests.some(q=>q.id===selQuest)) selQuest=null;
   for(const q of state.quests){
@@ -4819,7 +4809,7 @@ function dungList(list,left){
   return html;
 }
 let kazTab='kaz';
-function kazBar(){ return `<div class="mg-bar" role="tablist">${[['kaz','Kazamaták','kazamata'],['boss','Főgonosz','fame'],['deep','A Mélység',state.level>=DEEP_LVL?'down':'lock']].map(([k,l,i])=>`<button class="mg-chip ${kazTab===k?'on':''}" role="tab" data-act="kaztab" data-t="${k}" aria-selected="${kazTab===k}"><span class="mg-ic">${k==='kaz'?TAB_ICON.kazamata:ic(i)}</span>${l}${k==='boss'&&bossReady()?'<span class="mg-dot"></span>':''}${k==='deep'&&state.level>=DEEP_LVL&&!deepSt().best?'<span class="mg-new">ÚJ</span>':''}</button>`).join('')}</div>`; }
+function kazBar(){ return `<div class="mg-bar kaz-bar" role="tablist">${[['kaz','Kazamaták','kazamata'],['boss','Főgonosz','fame'],['deep','A Mélység',state.level>=DEEP_LVL?'down':'lock']].map(([k,l,i])=>`<button class="mg-chip ${kazTab===k?'on':''}" role="tab" data-act="kaztab" data-t="${k}" aria-selected="${kazTab===k}"><span class="mg-ic">${k==='kaz'?TAB_ICON.kazamata:ic(i)}</span>${l}${k==='boss'&&bossReady()?'<span class="mg-dot"></span>':''}</button>`).join('')}</div>`; }
 function renderKazamata(){
   if(kazTab==='boss') return renderBoss();
   if(kazTab==='deep') return renderDeep();
@@ -5461,7 +5451,6 @@ document.addEventListener('click',e=>{
       if(SB&&ONLINE.user){ if(ONLINE.nameBusy) return; ONLINE.nameBusy=true; nameFree(n).then(ok=>{ ONLINE.nameBusy=false; if(ok===false){ toast('Ez a név már foglalt, válassz másikat.'); const i=$('#nm'); if(i) i.focus(); return; } go(); }); return; }
       go(); } break;
     case 'view': view=el.dataset.v; render(); window.scrollTo(0,0); break;
-    case 'godeep': view='kazamata'; kazTab='deep'; render(); window.scrollTo(0,0); break;
     case 'inspect': hideTip(); openInspect(id); return;
     case 'bosshit': bossAttack(el.dataset.pog); return;
     case 'bossclaim': claimBoss(); return;
@@ -5634,7 +5623,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.25 21:10';
+const BUILD='2026.11.25 22:38';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
