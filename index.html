@@ -1641,6 +1641,7 @@ html[lang=en] .logo::after{content:"Budapest";display:block;margin-top:8px;font-
 .adv-w.big,.adv-w.big:nth-child(n){--c1:#f0c25a;--c2:#9a6a12;--rb:#c8202f;color:#4a1a00}
 .adv-bow{position:absolute;top:-5px;left:50%;width:16px;height:9px;transform:translateX(-50%);background:radial-gradient(circle at 25% 60%,var(--rb) 0 35%,transparent 37%),radial-gradient(circle at 75% 60%,var(--rb) 0 35%,transparent 37%);filter:drop-shadow(0 1px 1px #0006)}
 .adv-d{position:relative;z-index:1;min-width:24px;height:24px;padding:0 4px;border-radius:12px;background:#fffaf0;color:#7d0f19;font-weight:800;font-size:13px;line-height:24px;box-shadow:0 1px 3px #0006}
+.adv-w.pic,.adv-w.pic:nth-child(n){background:var(--img) center 40%/112% no-repeat!important;box-shadow:none!important;border-radius:0;justify-content:flex-end;padding-bottom:3px;overflow:visible}.adv-w.pic .adv-bow{display:none}.adv-w.pic .adv-d{min-width:20px;height:20px;line-height:20px;font-size:12px}.adv-w.pic.lock{opacity:.55;filter:saturate(.75) brightness(.8)}.adv-w.pic.open{opacity:.9}.adv-w.pic.today{filter:drop-shadow(0 0 10px #ffd34daa)}.adv-w.pic.big{background-size:125%!important}.adv-gift.pic{font-size:0;margin:0 auto 2px}.adv-gift.pic img{width:150px;height:150px;display:block;margin:0 auto}
 .adv-w.lock{opacity:.5;cursor:default;filter:saturate(.7) brightness(.85)}
 .adv-w.open{cursor:default;background:linear-gradient(145deg,#2b2420,#16110e);box-shadow:inset 0 0 0 1.5px #d9b45a66}.adv-w.open .adv-bow{display:none}.adv-w.open .adv-d{background:#d9b45a;color:#2b1a00}
 .adv-w.today{animation:advWiggle 2.2s ease-in-out infinite;box-shadow:0 0 0 2px #ffe08a,0 0 18px #ffd34dcc,inset 0 -3px 0 #0003}
@@ -3513,7 +3514,8 @@ function advRewards(d){ const R=ADV[d-1], L=state.level||1, out=[];
   return out; }
 function advCard(){ if(!state||!advShow()) return ''; const t=advToday(), o=advOpened();
   if(!t) return `<section class="card adv-card soon"><div class="adv-garland" aria-hidden="true"><svg viewBox="0 0 360 34" preserveAspectRatio="none"><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#1f5a34" stroke-width="9" stroke-linecap="round"/><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#2f7d49" stroke-width="4" stroke-dasharray="2 5" stroke-linecap="round"/></svg>${[[6,9],[16,19],[27,15],[38,8],[50,8],[61,14],[72,19],[83,13],[94,8]].map(([x,y],i)=>`<i class="adv-bulb b${i%4}" style="left:${x}%;top:${y}px;animation-delay:${(i%3)*.5}s"></i>`).join('')}</div><div class="adv-snow"></div><span class="label">🎄 Adventi naptár</span><h3 class="adv-h">December 1-jén nyílik az első ablak</h3><p class="note" style="margin:0">24 nap, 24 meglepetés. Minden nap egy új ablak, Szentestén pedig a legnagyobb ajándék.</p></section>`;
-  const cell=d=>{ const st=advState(d); return `<button class="adv-w ${st} ${d===24?'big':''} ${d===6?'mik':''}" data-act="advopen" data-d="${d}" ${st==='lock'||st==='open'?'disabled':''} aria-label="${d}. ablak">
+  const advImg=(d,st)=>st==='today'?'today':st==='open'?'open':st==='late'?'frozen':'w'+((d-1)%4);
+  const cell=d=>{ const st=advState(d); return `<button class="adv-w pic ${st} ${d===24?'big':''} ${d===6?'mik':''}" style="--img:url(advent/${advImg(d,st)}.webp)" data-act="advopen" data-d="${d}" ${st==='lock'||st==='open'?'disabled':''} aria-label="${d}. ablak">
       <i class="adv-bow"></i><span class="adv-d">${d}</span>${st==='open'?'<span class="adv-ok">✓</span>':st==='late'?`<span class="adv-late">${pogIc()}${ADV_LATE}</span>`:st==='today'?'<span class="adv-now">Nyisd ki!</span>':''}</button>`; };
   const todayOpen=o.includes(t);
   return `<section class="card adv-card"><div class="adv-garland" aria-hidden="true"><svg viewBox="0 0 360 34" preserveAspectRatio="none"><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#1f5a34" stroke-width="9" stroke-linecap="round"/><path d="M0 6 Q45 30 90 8 T180 8 T270 8 T360 6" fill="none" stroke="#2f7d49" stroke-width="4" stroke-dasharray="2 5" stroke-linecap="round"/></svg>${[[6,9],[16,19],[27,15],[38,8],[50,8],[61,14],[72,19],[83,13],[94,8]].map(([x,y],i)=>`<i class="adv-bulb b${i%4}" style="left:${x}%;top:${y}px;animation-delay:${(i%3)*.5}s"></i>`).join('')}</div><div class="adv-snow"></div><div class="row between adv-top"><span class="label">🎄 Adventi naptár</span><span class="note">${o.length}/24 kinyitva</span></div>
@@ -3535,7 +3537,7 @@ function advOpen(d){ const st=advState(d); if(st==='open'||st==='lock') return;
     :x.k==='frame'?`<div class="crw">${ic('user')}<div><b>Új portrékeret: ${esc(FRAME_BY[x.f].n)}</b></div></div>`
     :`<div class="crw">${ic('coin','ic-gold')}<div><b>+${fmt(x.n)} Ft</b></div></div>`;
   $('#overlay-root').innerHTML=`<div class="overlay" data-act="closemg"><div class="mg-card adv-pop" data-act="noop" role="dialog" aria-label="${d}. ablak">
-    <div class="adv-snow"></div><div class="adv-gift" aria-hidden="true">${d===6?'🎅':d===24?'🎄':'🎁'}</div><span class="label">🎄 Adventi naptár · ${d}. ablak</span><h2 class="adv-ttl">${d===24?'Boldog karácsonyt!':d===6?'Itt a Mikulás!':'Meglepetés!'}</h2>
+    <div class="adv-snow"></div><div class="adv-gift pic" aria-hidden="true"><img src="advent/burst.webp" alt=""></div><span class="label">🎄 Adventi naptár · ${d}. ablak</span><h2 class="adv-ttl">${d===24?'Boldog karácsonyt!':d===6?'Itt a Mikulás!':'Meglepetés!'}</h2>
     <p class="adv-t">„${esc(ADV[d-1].t)}”</p><div class="chest-rw">${rw.map(row).join('')}</div>
     <button class="btn primary" data-act="closemg" style="margin-top:12px;width:100%">Köszönöm!</button></div></div>`;
   render(); }
@@ -5610,7 +5612,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ if(e.
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.id==='nm'){ const b=$('#startbtn'); if(b&&!b.disabled) b.click(); } });
 document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button][data-act]')){ e.preventDefault(); e.target.click(); } });
 /* ================= online (Supabase) ================= */
-const BUILD='2026.11.24 19:50';
+const BUILD='2026.11.25 15:34';
 const CFG=window.EJJELI_CONFIG||{};
 const SESSION_STORE=(()=>{ let keep=true; try{ keep=localStorage.getItem('ej-remember')!=='0'; }catch(e){} const st=keep?window.localStorage:window.sessionStorage;
   return {getItem:k=>{ try{ return st.getItem(k); }catch(e){ return null; } }, setItem:(k,v)=>{ try{ (localStorage.getItem('ej-remember')!=='0'?localStorage:sessionStorage).setItem(k,v); }catch(e){} }, removeItem:k=>{ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }}; })();
